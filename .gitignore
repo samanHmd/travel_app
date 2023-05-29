@@ -1,0 +1,8 @@
+instance/database.db
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.db
+*.pyc
