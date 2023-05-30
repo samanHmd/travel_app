@@ -23,6 +23,7 @@ api = Api(app)
 
 
 if os.getenv('ENV') == 'production':
+    print("DATABASE_URI: ", os.getenv('DATABASE_URI'))
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 else:
     server = SSHTunnelForwarder(
