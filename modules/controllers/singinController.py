@@ -20,7 +20,8 @@ flight_field = {
     'departureTime': fields.DateTime,
     'arrivalTime': fields.DateTime,
     'departureLocation': fields.String,
-    'arrivalLocation': fields.String,
+    'arrivalCountry': fields.String,
+    'arrivalCity': fields.String,
     'price': fields.String,
 }
 
