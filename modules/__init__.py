@@ -33,9 +33,10 @@ else:
     )
     server.start()
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://admin:Ss40000072!@127.0.0.1:{server.local_bind_port}/travelDB'
+    import atexit
+    atexit.register(server.stop)
 
-import atexit
-atexit.register(server.stop)
+
 
 
 app.config['SECRET_KEY'] = '94fjfj@/afd+kdioeur8349j3dljfa38]\kdu'
