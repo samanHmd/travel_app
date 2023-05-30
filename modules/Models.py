@@ -5,7 +5,7 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     userName = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String, nullable=False)
+    password = db.Column(db.String(50), nullable=False)
     bookings = db.relationship('Booking', backref='user', lazy=True)
 
     def __repr__(self):
@@ -16,11 +16,11 @@ class Agent(db.Model):
     name = db.Column(db.String(50), unique=True, nullable=False)
     userName = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String, nullable=False)
+    password = db.Column(db.String(50), nullable=False)
 
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    customer = db.Column(db.String, nullable=False)
+    customer = db.Column(db.String(50), nullable=False)
     package = db.Column(db.Integer, nullable=False)
     totalPrice = db.Column(db.Integer, nullable=False)
     costumer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
