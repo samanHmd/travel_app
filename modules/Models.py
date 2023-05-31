@@ -1,6 +1,7 @@
 from modules import db, app
 from datetime import datetime
 from sqlalchemy.orm import class_mapper
+from sqlalchemy import event
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -86,9 +87,7 @@ class Hotel(db.Model):
     def totalPrice(self):
         duration = self.checkOutDate - self.checkInDate
         num_nights = duration.days
-
         priceTotal = num_nights * self.pricePerNight
-
         return priceTotal
     
     def as_dict(self):
@@ -120,6 +119,16 @@ class PackageActivity(db.Model):
     package_id = db.Column(db.Integer, db.ForeignKey('package.id'))
     activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))
 
+
+@event.listens_for(Hotel, 'before_insert')
+@event.listens_for(Hotel, 'before_update')
+def receive_before_insert(mapper, connection, hotel):
+    hotel.priceTotal = hotel.totalPrice
+
+@event.listens_for(Package, 'before_insert')
+@event.listens_for(Package, 'before_update')
+def receive_before_insert(mapper, connection, package):
+    package.price = package.price
 
 #Add app context here
 with app.app_context():
