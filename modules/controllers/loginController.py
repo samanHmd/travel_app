@@ -6,48 +6,10 @@ import jwt
 from datetime import datetime, timedelta
 
 
-flight_field = {
-    'id': fields.Integer,
-    'flightNumber': fields.String,
-    'departureTime': fields.DateTime,
-    'arrivalTime': fields.DateTime,
-    'departureLocation': fields.String,
-    'arrivalCountry': fields.String,
-    'arrivalCity': fields.String,
-    'price': fields.String,
-}
 
 
-
-hotel_field = {
-    'id': fields.Integer,
-    'hotelName': fields.String,
-    'checkInDate': fields.DateTime,
-    'checkOutDate': fields.DateTime,
-    'location': fields.String,
-    'pricePerNight': fields.String,
-}
-
-
-
-activity_field = {
-    'id': fields.Integer,
-    'activityName': fields.String,
-    'location': fields.String,
-    'price': fields.String,
-}
-
-package_field = {
-    'id': fields.Integer,
-    'packageName': fields.String,
-    'price': fields.Float,
-    'flights': fields.List(fields.Nested(flight_field), attribute=lambda x: x.get_flights()),
-    'hotels': fields.List(fields.Nested(hotel_field), attribute=lambda x: x.get_hotels()),
-    'activities': fields.List(fields.Nested(activity_field), attribute=lambda x: x.get_activities()),
-}
 
 class LoginController(Resource):
-    @marshal_with(package_field)
     def get(self):
         data = request.get_json()
         decoded_jwt = jwt.decode(data.get('api_token'), app.config['SECRET_KEY'], algorithms=["HS256"])
