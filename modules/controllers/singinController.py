@@ -26,8 +26,9 @@ class SignInController(Resource):
             db.session.commit()
             user = User.query.filter_by(userName=data.get('userName')).first()
             packages = Package.query.all()
-            encoded_jwt = jwt.encode({'user_id':user.id, 'expiration': str(datetime.utcnow() + timedelta(seconds=172800))}, app.config['SECRET_KEY'], algorithm="HS256")
-            return {"status": "success","api_token": encoded_jwt, "packages": jsonify([package.as_dict() for package in packages])}, 200
+            expiration_time = (datetime.utcnow() + timedelta(seconds=172800)).isoformat()
+            encoded_jwt = jwt.encode({'user_id':user.id, 'expiration': expiration_time}, app.config['SECRET_KEY'], algorithm="HS256")
+            return {"status": "success","api_token": encoded_jwt, "packages": [package.as_dict() for package in packages]}, 200
             
 
         

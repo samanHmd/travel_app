@@ -8,7 +8,7 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     userName = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(150), nullable=False)
     bookings = db.relationship('Booking', backref='user', lazy=True)
 
     def __repr__(self):
@@ -50,10 +50,17 @@ class Package(db.Model):
         return price
     
     def as_dict(self):
-        dict_repr = {c.key: getattr(self, c.key) for c in class_mapper(self.__class__).columns}
-        dict_repr['flights'] = [flight.as_dict() for flight in self.flights]
-        dict_repr['hotels'] = [hotel.as_dict() for hotel in self.hotels]
-        dict_repr['activities'] = [activity.as_dict() for activity in self.activities]
+        def convert_datetime(value):
+            if isinstance(value, datetime):
+                return value.isoformat()
+            return value
+
+        dict_repr = {c.key: convert_datetime(getattr(self, c.key)) for c in class_mapper(self.__class__).columns}
+
+        dict_repr['flights'] = [dict((key, convert_datetime(value)) for key, value in flight.as_dict().items()) for flight in self.flights]
+        dict_repr['hotels'] = [dict((key, convert_datetime(value)) for key, value in hotel.as_dict().items()) for hotel in self.hotels]
+        dict_repr['activities'] = [dict((key, convert_datetime(value)) for key, value in activity.as_dict().items()) for activity in self.activities]
+    
         return dict_repr
 
 class Flight(db.Model):
@@ -68,7 +75,7 @@ class Flight(db.Model):
     flightPrice = db.Column(db.Integer, nullable=False)
 
     def as_dict(self):
-        return {c.key: getattr(self, c.key) for c in class_mapper(self.__class__).columns}
+        return {c.key: getattr(self, c.key).isoformat() if isinstance(getattr(self, c.key), datetime) else getattr(self, c.key) for c in class_mapper(self.__class__).columns}
 
 
 
@@ -91,7 +98,7 @@ class Hotel(db.Model):
         return priceTotal
     
     def as_dict(self):
-        return {c.key: getattr(self, c.key) for c in class_mapper(self.__class__).columns}
+        return {c.key: getattr(self, c.key).isoformat() if isinstance(getattr(self, c.key), datetime) else getattr(self, c.key) for c in class_mapper(self.__class__).columns}
 
 
 class Activity(db.Model):

@@ -19,8 +19,12 @@ class LoginController(Resource):
         data = request.get_json()
         user = User.query.filter_by(userName=data.get('userName')).first()
         packages = Package.query.all()
-        if user and bcrypt.check_password_hash(user.password, data.get('password')):
-            encoded_jwt = jwt.encode({'user_id':user.id, 'expiration': str(datetime.utcnow() + timedelta(seconds=172800))}, app.config['SECRET_KEY'], algorithm="HS256")
-            return {"status": "success","api_token": encoded_jwt, "packages": jsonify([package.as_dict() for package in packages])}, 200
+        if user:
+            if bcrypt.check_password_hash(user.password, data.get('password')):
+                expiration_time = (datetime.utcnow() + timedelta(seconds=172800)).isoformat()
+                encoded_jwt = jwt.encode({'user_id':user.id, 'expiration': expiration_time}, app.config['SECRET_KEY'], algorithm="HS256")
+                return {"status": "success","api_token": encoded_jwt, "packages": [package.as_dict() for package in packages]}, 200
+            else: return { "status": "Password doesn't match" }
+
         else:
-            return { "status": "fail" }
+            return { "status": "No Such User" }
