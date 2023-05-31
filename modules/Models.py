@@ -40,14 +40,14 @@ class Package(db.Model):
     activities = db.relationship('Activity', secondary='package_activity')
     @property
     def priceCalc(self):
-        total_price = 0
+        price = 0
         for flight in self.flights:
-            total_price += flight.flightPrice
+            price += flight.flightPrice
         for hotel in self.hotels:
-            total_price += hotel.pricePerNight
+            price += hotel.pricePerNight
         for activity in self.activities:
-            total_price += activity.price
-        return total_price
+            price += activity.price
+        return price
     
     def as_dict(self):
         dict_repr = {c.key: getattr(self, c.key) for c in class_mapper(self.__class__).columns}
