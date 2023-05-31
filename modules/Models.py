@@ -39,7 +39,7 @@ class Package(db.Model):
     hotels = db.relationship('Hotel', secondary='package_hotel')
     activities = db.relationship('Activity', secondary='package_activity')
     @property
-    def price(self):
+    def priceCalc(self):
         total_price = 0
         for flight in self.flights:
             total_price += flight.flightPrice
@@ -128,7 +128,7 @@ def receive_before_insert(mapper, connection, hotel):
 @event.listens_for(Package, 'before_insert')
 @event.listens_for(Package, 'before_update')
 def receive_before_insert(mapper, connection, package):
-    package.price = package.price
+    package.price = package.priceCalc
 
 #Add app context here
 with app.app_context():
