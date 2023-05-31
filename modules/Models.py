@@ -122,5 +122,5 @@ class PackageActivity(db.Model):
 
 
 #Add app context here
-with app.app_context():
-    db.create_all()    
+#with app.app_context():
+#    db.create_all()    
