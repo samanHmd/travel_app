@@ -1,4 +1,6 @@
 from modules import db, app
+from datetime import datetime
+from sqlalchemy.orm import class_mapper
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -9,7 +11,8 @@ class User(db.Model):
     bookings = db.relationship('Booking', backref='user', lazy=True)
 
     def __repr__(self):
-        return f"User(id={self.id}, name={self.name}, userName={self.userName}, email={self.email}, password={self.password})"
+        return f"User(id={self.id}, name={self.name}, userName={self.userName}, email={self.email})"
+
 
 class Agent(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -20,10 +23,9 @@ class Agent(db.Model):
 
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    customer = db.Column(db.String(50), nullable=False)
-    package = db.Column(db.Integer, nullable=False)
-    totalPrice = db.Column(db.Integer, nullable=False)
-    costumer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    package_id = db.Column(db.Integer, db.ForeignKey('package.id'), nullable=False)
+    bookingDate = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Package(db.Model):
     __tablename__ = 'package'
@@ -32,61 +34,93 @@ class Package(db.Model):
     packageName = db.Column(db.String(50), unique=True, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     daysCount = db.Column(db.Integer, nullable=True)
-    components = db.relationship('PackageComponent', backref='package', lazy=True)
-
-    def get_flights(self):
-        return Flight.query.join(PackageComponent).filter_by(package_id=self.id, componentType='flight').all()
-
-    def get_hotels(self):
-        return Hotel.query.join(PackageComponent).filter_by(package_id=self.id, componentType='hotel').all()
-
-    def get_activities(self):
-        return Activity.query.join(PackageComponent).filter_by(package_id=self.id, componentType='activity').all()
-
+    flights = db.relationship('Flight', secondary='package_flight')
+    hotels = db.relationship('Hotel', secondary='package_hotel')
+    activities = db.relationship('Activity', secondary='package_activity')
+    @property
+    def price(self):
+        total_price = 0
+        for flight in self.flights:
+            total_price += flight.flightPrice
+        for hotel in self.hotels:
+            total_price += hotel.pricePerNight
+        for activity in self.activities:
+            total_price += activity.price
+        return total_price
+    
+    def as_dict(self):
+        dict_repr = {c.key: getattr(self, c.key) for c in class_mapper(self.__class__).columns}
+        dict_repr['flights'] = [flight.as_dict() for flight in self.flights]
+        dict_repr['hotels'] = [hotel.as_dict() for hotel in self.hotels]
+        dict_repr['activities'] = [activity.as_dict() for activity in self.activities]
+        return dict_repr
 
 class Flight(db.Model):
     __tablename__ = 'flight'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    flightNumber = db.Column(db.String(50), nullable=False)
-    departureLocation = db.Column(db.String(50), nullable=False)
+    flightNumber = db.Column(db.String(50), nullable=False, unique=True)
+    departureCity = db.Column(db.String(50), nullable=False)
     arrivalCountry = db.Column(db.String(50), nullable=False)
     arrivalCity = db.Column(db.String(50), nullable=False)
     departureTime = db.Column(db.DateTime, nullable=False)
-    arrivalTime = db.Column(db.DateTime, nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    package_component = db.relationship('PackageComponent', backref='flight', uselist=False)
+    flightPrice = db.Column(db.Integer, nullable=False)
+
+    def as_dict(self):
+        return {c.key: getattr(self, c.key) for c in class_mapper(self.__class__).columns}
+
+
 
 class Hotel(db.Model):
     __tablename__ = 'hotel'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     hotelName = db.Column(db.String(50), nullable=False)
-    location = db.Column(db.String(50), nullable=False)
-    checkInDate = db.Column(db.DateTime, nullable=False)  # add this
-    checkOutDate = db.Column(db.DateTime, nullable=False)  # and this
-    pricePerNight = db.Column(db.Float, nullable=False)
-    package_component = db.relationship('PackageComponent', backref='hotel', uselist=False)
+    cityName = db.Column(db.String(50), nullable=False)
+    checkInDate = db.Column(db.DateTime, nullable=False) 
+    checkOutDate = db.Column(db.DateTime, nullable=False)  
+    pricePerNight = db.Column(db.Integer, nullable=False)
+    priceTotal = db.Column(db.Integer, nullable=True)
+
+    @property
+    def totalPrice(self):
+        # calculate the number of nights of the stay
+        duration = self.checkOutDate - self.checkInDate
+        num_nights = duration.days
+
+        # calculate the total price
+        priceTotal = num_nights * self.pricePerNight
+
+        return priceTotal
+    
+    def as_dict(self):
+        return {c.key: getattr(self, c.key) for c in class_mapper(self.__class__).columns}
+
 
 class Activity(db.Model):
     __tablename__ = 'activity'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     activityName = db.Column(db.String(50), nullable=False)
-    location = db.Column(db.String(50), nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    package_component = db.relationship('PackageComponent', backref='activity', uselist=False)
+    price = db.Column(db.Integer, nullable=False)
+    
+    def as_dict(self):
+        return {c.key: getattr(self, c.key) for c in class_mapper(self.__class__).columns}
 
-class PackageComponent(db.Model):
-    __tablename__ = 'package_component'
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    componentType = db.Column(db.String(50), nullable=False)
-    package_id = db.Column(db.Integer, db.ForeignKey('package.id'), nullable=False)
+class PackageFlight(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    package_id = db.Column(db.Integer, db.ForeignKey('package.id'))
     flight_id = db.Column(db.Integer, db.ForeignKey('flight.id'))
-    hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'))
-    activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))
 
+class PackageHotel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    package_id = db.Column(db.Integer, db.ForeignKey('package.id'))
+    hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'))
+
+class PackageActivity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    package_id = db.Column(db.Integer, db.ForeignKey('package.id'))
+    activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))
 
 
 #Add app context here

@@ -7,23 +7,12 @@ from sshtunnel import SSHTunnelForwarder
 import os
 
 
-
-ssh_user = "ubuntu"
-ssh_key_file = "C:\\Users\\a\\Desktop\\key\\privateKey.pem"
-aws_host = "3.128.182.187"
-remote_bind_address = "database-1.ccedoovh3jkf.us-east-2.rds.amazonaws.com"
-db_user = "admin"
-db_password = "Ss40000072!"
-db_name = "travelDB"
-
-
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
 
 if os.getenv('ENV') == 'production':
-    print("DATABASE_URI: ", os.getenv('DATABASE_URI'))
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 else:
     server = SSHTunnelForwarder(

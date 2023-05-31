@@ -3,123 +3,131 @@ from flask_restful import Api, Resource, fields, marshal_with
 from faker import Faker
 import random
 from datetime import datetime, timedelta
-from modules.Models import Flight, Hotel, Activity, Package, PackageComponent
+from modules.Models import Flight, Hotel, Activity, Package, PackageHotel, PackageFlight, PackageActivity
 from modules import db
 
-faker = Faker()
-
-flight_field = {
-    'id': fields.Integer,
-    'flightNumber': fields.String,
-    'departureTime': fields.DateTime,
-    'arrivalTime': fields.DateTime,
-    'departureLocation': fields.String,
-    'arrivalCountry': fields.String,
-    'arrivalCity': fields.String,
-    'price': fields.String,
-}
 
 
+flights_data = [
+    {"flightNumber": "FL001", "departureCity": "Montreal", "arrivalCountry": "Italy", "arrivalCity": "Rome", "departureTime": "2023-06-10 20:00:00", "flightPrice": 700},
+    {"flightNumber": "FL002", "departureCity": "Montreal", "arrivalCountry": "USA", "arrivalCity": "Los Angeles", "departureTime": "2023-07-10 10:00:00", "flightPrice": 600},
+    {"flightNumber": "FL003", "departureCity": "Montreal", "arrivalCountry": "France", "arrivalCity": "Paris", "departureTime": "2023-07-10 10:00:00", "flightPrice": 800},
+    {"flightNumber": "FL004", "departureCity": "Montreal", "arrivalCountry": "Germany", "arrivalCity": "Berlin", "departureTime": "2023-07-15 10:00:00", "flightPrice": 900},
+    {"flightNumber": "FL005", "departureCity": "Montreal", "arrivalCountry": "Spain", "arrivalCity": "Madrid", "departureTime": "2023-07-10 10:00:00", "flightPrice": 700},
+    
+]
 
-hotel_field = {
-    'id': fields.Integer,
-    'hotelName': fields.String,
-    'checkInDate': fields.DateTime,
-    'checkOutDate': fields.DateTime,
-    'location': fields.String,
-    'pricePerNight': fields.String,
-}
+hotels_data = [
+    {"hotelName": "Hotel Rome", "cityName": "Rome", "checkInDate": "2023-06-21", "checkOutDate": "2023-06-30", "pricePerNight": 150},
+    {"hotelName": "Hotel LA", "cityName": "Los Angeles", "checkInDate": "2023-07-16", "checkOutDate": "2023-07-25", "pricePerNight": 200},
+    {"hotelName": "Hotel Paris", "cityName": "Paris", "checkInDate": "2023-07-16", "checkOutDate": "2023-07-25", "pricePerNight": 180},
+    {"hotelName": "Hotel Berlin", "cityName": "Berlin", "checkInDate": "2023-07-16", "checkOutDate": "2023-07-25", "pricePerNight": 190},
+    {"hotelName": "Hotel Madrid", "cityName": "Madrid", "checkInDate": "2023-07-16", "checkOutDate": "2023-07-25", "pricePerNight": 160},
+]
+
+activities_data = [
+    {"activityName": "Hiking", "price": 10},
+    {"activityName": "Biking", "price": 15},
+    {"activityName": "Museum", "price": 20},
+    {"activityName": "City Tour", "price": 40},
+    {"activityName": "Running around the Hotel", "price": 80},
+]
+
+packages_data = [
+    {"packageName": "Rome Tour", "daysCount": 5, "flight_id": 1, "hotel_ids": [1], "activity_ids": [1]},
+    {"packageName": "LA Tour", "daysCount": 10, "flight_id": 2, "hotel_ids": [2], "activity_ids": [2]},
+    {"packageName": "Paris Tour", "daysCount": 6, "flight_id": 2, "hotel_ids": [3], "activity_ids": [3]},
+    {"packageName": "Berlin Tour", "daysCount": 3, "flight_id": 2, "hotel_ids": [4], "activity_ids": [4]},
+    {"packageName": "Madrid Tour", "daysCount": 4, "flight_id": 2, "hotel_ids": [5], "activity_ids": [5]},
+    
+]
 
 
 
-activity_field = {
-    'id': fields.Integer,
-    'activityName': fields.String,
-    'location': fields.String,
-    'price': fields.String,
-}
 
-package_field = {
-    'id': fields.Integer,
-    'packageName': fields.String,
-    'price': fields.Float,
-    'flights': fields.List(fields.Nested(flight_field), attribute=lambda x: x.get_flights()),
-    'hotels': fields.List(fields.Nested(hotel_field), attribute=lambda x: x.get_hotels()),
-    'activities': fields.List(fields.Nested(activity_field), attribute=lambda x: x.get_activities()),
-}
+# flight_field = {
+#     'id': fields.Integer,
+#     'flightNumber': fields.String,
+#     'departureTime': fields.DateTime,
+#     'arrivalTime': fields.DateTime,
+#     'departureLocation': fields.String,
+#     'arrivalCountry': fields.String,
+#     'arrivalCity': fields.String,
+#     'price': fields.String,
+# }
+
+
+
+# hotel_field = {
+#     'id': fields.Integer,
+#     'hotelName': fields.String,
+#     'checkInDate': fields.DateTime,
+#     'checkOutDate': fields.DateTime,
+#     'location': fields.String,
+#     'pricePerNight': fields.String,
+# }
+
+
+
+# activity_field = {
+#     'id': fields.Integer,
+#     'activityName': fields.String,
+#     'location': fields.String,
+#     'price': fields.String,
+# }
+
+# package_field = {
+#     'id': fields.Integer,
+#     'packageName': fields.String,
+#     'price': fields.Float,
+#     'flights': fields.List(fields.Nested(flight_field), attribute=lambda x: x.get_flights()),
+#     'hotels': fields.List(fields.Nested(hotel_field), attribute=lambda x: x.get_hotels()),
+#     'activities': fields.List(fields.Nested(activity_field), attribute=lambda x: x.get_activities()),
+# }
 
 class PackageController(Resource):
-    @marshal_with(package_field)
+    #@marshal_with(package_field)
     def get(self):
         packages = Package.query.all()
-        #db.drop_all()
-        #db.create_all()
-        return packages
+        return jsonify([package.as_dict() for package in packages])
         
 
     def post(self):
-        for _ in range(10):
-            start_date = datetime.now()
-            end_date = start_date + timedelta(days=10)
+        for flight in flights_data:
+            new_flight = Flight(**flight)
+            db.session.add(new_flight)
+    
+        # populate hotels
+        for hotel in hotels_data:
+            new_hotel = Hotel(**hotel)
+            db.session.add(new_hotel)
 
-            flight = Flight(
-                flightNumber=faker.unique.bothify(text='??###'),
-                departureLocation=faker.city(),
-                arrivalCountry=faker.city(),
-                arrivalCity=faker.city(),
-                departureTime=faker.date_time_between_dates(datetime_start=start_date, datetime_end=end_date),
-                arrivalTime=faker.date_time_between_dates(datetime_start=start_date, datetime_end=end_date),
-                price=random.uniform(100.0, 1000.0)
-            )
+        # populate activities
+        for activity in activities_data:
+            new_activity = Activity(**activity)
+            db.session.add(new_activity)
 
-            hotel = Hotel(
-                hotelName=faker.company(),
-                location=faker.city(),
-                checkInDate=faker.date_time_between_dates(datetime_start=start_date, datetime_end=end_date),
-                checkOutDate=faker.date_time_between_dates(datetime_start=start_date, datetime_end=end_date),
-                pricePerNight=random.uniform(50.0, 300.0)
-            )
+        db.session.commit()
 
-            activity = Activity(
-                activityName=faker.bs(),
-                location=faker.city(),
-                price=random.uniform(20.0, 200.0)
-            )
+        # populate packages
+        for package in packages_data:
+            new_package = Package(packageName=package["packageName"], daysCount=package["daysCount"])
+            db.session.add(new_package)
+            db.session.commit()  # commit to get the package id
 
-            db.session.add(flight)
-            db.session.add(hotel)
-            db.session.add(activity)
-            db.session.commit()
+            # associate flight with package
+            new_package_flight = PackageFlight(package_id=new_package.id, flight_id=package["flight_id"])
+            db.session.add(new_package_flight)
 
-            package = Package(
-                packageName=faker.catch_phrase(),
-                price=flight.price + hotel.pricePerNight + activity.price
-            )
+            # associate hotels with package
+            for hotel_id in package["hotel_ids"]:
+                new_package_hotel = PackageHotel(package_id=new_package.id, hotel_id=hotel_id)
+                db.session.add(new_package_hotel)
 
-            db.session.add(package)
-            db.session.commit()
+            # associate activities with package
+            for activity_id in package["activity_ids"]:
+                new_package_activity = PackageActivity(package_id=new_package.id, activity_id=activity_id)
+                db.session.add(new_package_activity)
 
-            flight_component = PackageComponent(
-                componentType='flight',
-                package_id=package.id,
-                flight_id=flight.id
-            )
-
-            hotel_component = PackageComponent(
-                componentType='hotel',
-                package_id=package.id,
-                hotel_id=hotel.id
-            )
-
-            activity_component = PackageComponent(
-                componentType='activity',
-                package_id=package.id,
-                activity_id=activity.id
-            )
-
-            db.session.add(flight_component)
-            db.session.add(hotel_component)
-            db.session.add(activity_component)
-            db.session.commit()
-
-        return "packages post success"
+        db.session.commit()
+        return "success"
