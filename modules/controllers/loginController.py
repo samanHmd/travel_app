@@ -21,6 +21,6 @@ class LoginController(Resource):
         packages = Package.query.all()
         if user and bcrypt.check_password_hash(user.password, data.get('password')):
             encoded_jwt = jwt.encode({'user_id':user.id, 'expiration': str(datetime.utcnow() + timedelta(seconds=172800))}, app.config['SECRET_KEY'], algorithm="HS256")
-            return {"status": "success","api_token": encoded_jwt, "packages": marshal(packages, package_field)}, 200
+            return {"status": "success","api_token": encoded_jwt, "packages": jsonify([package.as_dict() for package in packages])}, 200
         else:
             return { "status": "fail" }

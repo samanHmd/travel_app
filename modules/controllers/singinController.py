@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, fields, marshal_with, marshal
 from modules.Models import User, Package
 from modules import bcrypt, db, app
@@ -27,7 +27,7 @@ class SignInController(Resource):
             user = User.query.filter_by(userName=data.get('userName')).first()
             packages = Package.query.all()
             encoded_jwt = jwt.encode({'user_id':user.id, 'expiration': str(datetime.utcnow() + timedelta(seconds=172800))}, app.config['SECRET_KEY'], algorithm="HS256")
-            return {"status": "success","api_token": encoded_jwt, "packages": marshal(packages, package_field)}, 200
+            return {"status": "success","api_token": encoded_jwt, "packages": jsonify([package.as_dict() for package in packages])}, 200
             
 
         
