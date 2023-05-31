@@ -84,11 +84,9 @@ class Hotel(db.Model):
 
     @property
     def totalPrice(self):
-        # calculate the number of nights of the stay
         duration = self.checkOutDate - self.checkInDate
         num_nights = duration.days
 
-        # calculate the total price
         priceTotal = num_nights * self.pricePerNight
 
         return priceTotal
@@ -103,7 +101,7 @@ class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     activityName = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    
+
     def as_dict(self):
         return {c.key: getattr(self, c.key) for c in class_mapper(self.__class__).columns}
 
