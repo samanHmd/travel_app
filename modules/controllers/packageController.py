@@ -9,20 +9,20 @@ from modules import db
 
 
 flights_data = [
-    {"flightNumber": "FL001", "departureCity": "Montreal", "arrivalCountry": "Italy", "arrivalCity": "Rome", "departureTime": "2023-06-10 20:00:00", "flightPrice": 700},
-    {"flightNumber": "FL002", "departureCity": "Montreal", "arrivalCountry": "USA", "arrivalCity": "Los Angeles", "departureTime": "2023-07-10 10:00:00", "flightPrice": 600},
-    {"flightNumber": "FL003", "departureCity": "Montreal", "arrivalCountry": "France", "arrivalCity": "Paris", "departureTime": "2023-07-10 10:00:00", "flightPrice": 800},
-    {"flightNumber": "FL004", "departureCity": "Montreal", "arrivalCountry": "Germany", "arrivalCity": "Berlin", "departureTime": "2023-07-15 10:00:00", "flightPrice": 900},
-    {"flightNumber": "FL005", "departureCity": "Montreal", "arrivalCountry": "Spain", "arrivalCity": "Madrid", "departureTime": "2023-07-10 10:00:00", "flightPrice": 700},
+    {"flightNumber": "FL001","departureCity": "Montreal","arrivalCountry": "Italy","arrivalCity": "Rome","departureTime": datetime.strptime('2023-06-10 20:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 700},
+    {"flightNumber": "FL002","departureCity": "Montreal","arrivalCountry": "USA","arrivalCity": "Los Angeles","departureTime": datetime.strptime('2023-07-10 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 600},
+    {"flightNumber": "FL003","departureCity": "Montreal","arrivalCountry": "France","arrivalCity": "Paris","departureTime": datetime.strptime('2023-07-10 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 800},
+    {"flightNumber": "FL004","departureCity": "Montreal","arrivalCountry": "Germany","arrivalCity": "Berlin","departureTime": datetime.strptime('2023-07-15 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 900},
+    {"flightNumber": "FL005","departureCity": "Montreal","arrivalCountry": "Spain","arrivalCity": "Madrid","departureTime": datetime.strptime('2023-07-10 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 700},
     
 ]
 
 hotels_data = [
-    {"hotelName": "Hotel Rome", "cityName": "Rome", "checkInDate": "2023-06-21", "checkOutDate": "2023-06-30", "pricePerNight": 150},
-    {"hotelName": "Hotel LA", "cityName": "Los Angeles", "checkInDate": "2023-07-16", "checkOutDate": "2023-07-25", "pricePerNight": 200},
-    {"hotelName": "Hotel Paris", "cityName": "Paris", "checkInDate": "2023-07-16", "checkOutDate": "2023-07-25", "pricePerNight": 180},
-    {"hotelName": "Hotel Berlin", "cityName": "Berlin", "checkInDate": "2023-07-16", "checkOutDate": "2023-07-25", "pricePerNight": 190},
-    {"hotelName": "Hotel Madrid", "cityName": "Madrid", "checkInDate": "2023-07-16", "checkOutDate": "2023-07-25", "pricePerNight": 160},
+    {"hotelName": "Hotel Rome", "cityName": "Rome", "checkInDate":datetime.strptime('2023-06-21', '%Y-%m-%d'), "checkOutDate": datetime.strptime('2023-06-30', '%Y-%m-%d'), "pricePerNight": 150},
+    {"hotelName": "Hotel LA","cityName": "Los Angeles","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 200},
+    {"hotelName": "Hotel Paris","cityName": "Paris","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 180},
+    {"hotelName": "Hotel Berlin","cityName": "Berlin","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 190},
+    {"hotelName": "Hotel Madrid","cityName": "Madrid","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 160},
 ]
 
 activities_data = [
