@@ -37,6 +37,7 @@ class Package(db.Model):
     packageName = db.Column(db.String(50), unique=True, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     daysCount = db.Column(db.Integer, nullable=True)
+    isCustom = db.Column(db.Boolean, nullable=False)
     flights = db.relationship('Flight', secondary='package_flight')
     hotels = db.relationship('Hotel', secondary='package_hotel')
     activities = db.relationship('Activity', secondary='package_activity')

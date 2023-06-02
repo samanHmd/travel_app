@@ -119,7 +119,7 @@ class PackageController(Resource):
 
         # populate packages
         for package in packages_data:
-            new_package = Package(packageName=package["packageName"], daysCount=package["daysCount"])
+            new_package = Package(packageName=package["packageName"], daysCount=package["daysCount"], isCustom=False)
             db.session.add(new_package)
             db.session.commit()  # commit to get the package id
 

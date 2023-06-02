@@ -15,7 +15,13 @@ class ReceiveDataController(Resource):
         check_in_date = datetime.strptime(data["check_in_date"], '%Y-%m-%d')
         check_out_date = datetime.strptime(data["check_out_date"], '%Y-%m-%d')
         flights = Flight.query.filter_by(departureCity= data.get('departureCity'), arrivalCity=data.get('destinationCity')).all()
-        flights = Flight.query.filter_by(arrivalCity=data.get('destinationCity')).all()
+        hotels = Hotel.query.filter_by(cityName=data.get('destinationCity')).all()
+        activities = Activity.query.all()
         print(flights)
-        return {"status": "success","flights": [flight.as_dict() for flight in flights]}, 200
+        return {
+            "status": "success",
+            "flights": [flight.as_dict() for flight in flights],
+            "hotels": [hotel.as_dict() for hotel in hotels],
+            "activities": [activity.as_dict() for activity in activities]
+            }, 200
             
