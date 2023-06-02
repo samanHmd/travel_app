@@ -27,6 +27,8 @@ class Booking(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     package_id = db.Column(db.Integer, db.ForeignKey('package.id'), nullable=False)
     bookingDate = db.Column(db.DateTime, default=datetime.utcnow)
+    departureDate = db.Column(db.DateTime, nullable=False) 
+    returnDate = db.Column(db.DateTime, nullable=False)  
 
 class Package(db.Model):
     __tablename__ = 'package'
@@ -85,17 +87,14 @@ class Hotel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     hotelName = db.Column(db.String(50), nullable=False)
     cityName = db.Column(db.String(50), nullable=False)
-    checkInDate = db.Column(db.DateTime, nullable=False) 
-    checkOutDate = db.Column(db.DateTime, nullable=False)  
     pricePerNight = db.Column(db.Integer, nullable=False)
-    priceTotal = db.Column(db.Integer, nullable=True)
 
-    @property
-    def totalPrice(self):
-        duration = self.checkOutDate - self.checkInDate
-        num_nights = duration.days
-        priceTotal = num_nights * self.pricePerNight
-        return priceTotal
+    # @property
+    # def totalPrice(self):
+    #     duration = self.checkOutDate - self.checkInDate
+    #     num_nights = duration.days
+    #     priceTotal = num_nights * self.pricePerNight
+    #     return priceTotal
     
     def as_dict(self):
         return {c.key: getattr(self, c.key).isoformat() if isinstance(getattr(self, c.key), datetime) else getattr(self, c.key) for c in class_mapper(self.__class__).columns}
@@ -127,10 +126,10 @@ class PackageActivity(db.Model):
     activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))
 
 
-@event.listens_for(Hotel, 'before_insert')
-@event.listens_for(Hotel, 'before_update')
-def receive_before_insert(mapper, connection, hotel):
-    hotel.priceTotal = hotel.totalPrice
+# @event.listens_for(Hotel, 'before_insert')
+# @event.listens_for(Hotel, 'before_update')
+# def receive_before_insert(mapper, connection, hotel):
+#     hotel.priceTotal = hotel.totalPrice
 
 @event.listens_for(Package, 'before_insert')
 @event.listens_for(Package, 'before_update')

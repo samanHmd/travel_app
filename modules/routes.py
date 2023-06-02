@@ -7,6 +7,8 @@ from modules.controllers.loginController import LoginController
 from modules.controllers.agentLoginController import AgentLoginController
 from modules.controllers.agentSignupController import AgentSignupConroller
 from modules.controllers.packageController import PackageController
+from modules.controllers.receiveDataController import ReceiveDataController
+from modules.controllers.createPackageController import CreatePackageController
 
 api = Api(app)
 
@@ -16,3 +18,5 @@ api.add_resource(LoginController, '/login')
 api.add_resource(AgentLoginController, '/agentLogin')
 api.add_resource(AgentSignupConroller, '/agentSignup')
 api.add_resource(PackageController, '/packages')
+api.add_resource(ReceiveDataController, '/receiveData')
+api.add_resource(CreatePackageController, '/createPackage')

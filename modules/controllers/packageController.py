@@ -18,12 +18,20 @@ flights_data = [
 ]
 
 hotels_data = [
-    {"hotelName": "Hotel Rome", "cityName": "Rome", "checkInDate":datetime.strptime('2023-06-21', '%Y-%m-%d'), "checkOutDate": datetime.strptime('2023-06-30', '%Y-%m-%d'), "pricePerNight": 150},
-    {"hotelName": "Hotel LA","cityName": "Los Angeles","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 200},
-    {"hotelName": "Hotel Paris","cityName": "Paris","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 180},
-    {"hotelName": "Hotel Berlin","cityName": "Berlin","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 190},
-    {"hotelName": "Hotel Madrid","cityName": "Madrid","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 160},
+    {"hotelName": "Hotel Rome", "cityName": "Rome", "pricePerNight": 150},
+    {"hotelName": "Hotel LA","cityName": "Los Angeles", "pricePerNight": 200},
+    {"hotelName": "Hotel Paris","cityName": "Paris", "pricePerNight": 180},
+    {"hotelName": "Hotel Berlin","cityName": "Berlin", "pricePerNight": 190},
+    {"hotelName": "Hotel Madrid","cityName": "Madrid", "pricePerNight": 160},
 ]
+
+# hotels_data = [
+#     {"hotelName": "Hotel Rome", "cityName": "Rome", "checkInDate":datetime.strptime('2023-06-21', '%Y-%m-%d'), "checkOutDate": datetime.strptime('2023-06-30', '%Y-%m-%d'), "pricePerNight": 150},
+#     {"hotelName": "Hotel LA","cityName": "Los Angeles","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 200},
+#     {"hotelName": "Hotel Paris","cityName": "Paris","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 180},
+#     {"hotelName": "Hotel Berlin","cityName": "Berlin","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 190},
+#     {"hotelName": "Hotel Madrid","cityName": "Madrid","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 160},
+# ]
 
 activities_data = [
     {"activityName": "Hiking", "price": 10},
@@ -131,3 +139,5 @@ class PackageController(Resource):
 
         db.session.commit()
         return "success"
+    
+    
