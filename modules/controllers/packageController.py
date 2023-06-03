@@ -5,25 +5,28 @@ import random
 from datetime import datetime, timedelta
 from modules.Models import Flight, Hotel, Activity, Package, PackageHotel, PackageFlight, PackageActivity
 from modules import db
+from modules.data import flights_data, hotels_data, activities_data, packages_data
 
 
 
-flights_data = [
-    {"flightNumber": "FL001","departureCity": "Montreal","arrivalCountry": "Italy","arrivalCity": "Rome","departureTime": datetime.strptime('2023-06-10 20:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 700},
-    {"flightNumber": "FL002","departureCity": "Montreal","arrivalCountry": "USA","arrivalCity": "Los Angeles","departureTime": datetime.strptime('2023-07-10 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 600},
-    {"flightNumber": "FL003","departureCity": "Montreal","arrivalCountry": "France","arrivalCity": "Paris","departureTime": datetime.strptime('2023-07-10 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 800},
-    {"flightNumber": "FL004","departureCity": "Montreal","arrivalCountry": "Germany","arrivalCity": "Berlin","departureTime": datetime.strptime('2023-07-15 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 900},
-    {"flightNumber": "FL005","departureCity": "Montreal","arrivalCountry": "Spain","arrivalCity": "Madrid","departureTime": datetime.strptime('2023-07-10 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 700},
+# flights_data = [
+#     {"flightNumber": "FL001","departureCity": "Montreal","arrivalCountry": "Italy","arrivalCity": "Rome","departureTime": datetime.strptime('2023-06-10 20:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 700},
+#     {"flightNumber": "FL002","departureCity": "Montreal","arrivalCountry": "USA","arrivalCity": "Los Angeles","departureTime": datetime.strptime('2023-07-10 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 600},
+#     {"flightNumber": "FL003","departureCity": "Montreal","arrivalCountry": "France","arrivalCity": "Paris","departureTime": datetime.strptime('2023-07-10 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 800},
+#     {"flightNumber": "FL004","departureCity": "Montreal","arrivalCountry": "Germany","arrivalCity": "Berlin","departureTime": datetime.strptime('2023-07-15 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 900},
+#     {"flightNumber": "FL005","departureCity": "Montreal","arrivalCountry": "Spain","arrivalCity": "Madrid","departureTime": datetime.strptime('2023-07-10 10:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 700},
     
-]
+# ]
 
-hotels_data = [
-    {"hotelName": "Hotel Rome", "cityName": "Rome", "pricePerNight": 150},
-    {"hotelName": "Hotel LA","cityName": "Los Angeles", "pricePerNight": 200},
-    {"hotelName": "Hotel Paris","cityName": "Paris", "pricePerNight": 180},
-    {"hotelName": "Hotel Berlin","cityName": "Berlin", "pricePerNight": 190},
-    {"hotelName": "Hotel Madrid","cityName": "Madrid", "pricePerNight": 160},
-]
+# hotels_data = [
+#     {"hotelName": "Hotel Rome", "cityName": "Rome", "pricePerNight": 150},
+#     {"hotelName": "Hotel LA","cityName": "Los Angeles", "pricePerNight": 200},
+#     {"hotelName": "Hotel Paris","cityName": "Paris", "pricePerNight": 180},
+#     {"hotelName": "Hotel Paris","cityName": "Paris", "pricePerNight": 180},
+#     {"hotelName": "Hotel Paris","cityName": "Paris", "pricePerNight": 180},
+#     {"hotelName": "Hotel Berlin","cityName": "Berlin", "pricePerNight": 190},
+#     {"hotelName": "Hotel Madrid","cityName": "Madrid", "pricePerNight": 160},
+# ]
 
 # hotels_data = [
 #     {"hotelName": "Hotel Rome", "cityName": "Rome", "checkInDate":datetime.strptime('2023-06-21', '%Y-%m-%d'), "checkOutDate": datetime.strptime('2023-06-30', '%Y-%m-%d'), "pricePerNight": 150},
@@ -33,22 +36,22 @@ hotels_data = [
 #     {"hotelName": "Hotel Madrid","cityName": "Madrid","checkInDate": datetime.strptime('2023-07-16', '%Y-%m-%d'),"checkOutDate": datetime.strptime('2023-07-25', '%Y-%m-%d'),"pricePerNight": 160},
 # ]
 
-activities_data = [
-    {"activityName": "Hiking", "price": 10},
-    {"activityName": "Biking", "price": 15},
-    {"activityName": "Museum", "price": 20},
-    {"activityName": "City Tour", "price": 40},
-    {"activityName": "Running around the Hotel", "price": 80},
-]
+# activities_data = [
+#     {"activityName": "Hiking", "price": 10},
+#     {"activityName": "Biking", "price": 15},
+#     {"activityName": "Museum", "price": 20},
+#     {"activityName": "City Tour", "price": 40},
+#     {"activityName": "Running around the Hotel", "price": 80},
+# ]
 
-packages_data = [
-    {"packageName": "Rome Tour", "daysCount": 5, "flight_id": 1, "hotel_ids": [1], "activity_ids": [1]},
-    {"packageName": "LA Tour", "daysCount": 10, "flight_id": 2, "hotel_ids": [2], "activity_ids": [2]},
-    {"packageName": "Paris Tour", "daysCount": 6, "flight_id": 2, "hotel_ids": [3], "activity_ids": [3]},
-    {"packageName": "Berlin Tour", "daysCount": 3, "flight_id": 2, "hotel_ids": [4], "activity_ids": [4]},
-    {"packageName": "Madrid Tour", "daysCount": 4, "flight_id": 2, "hotel_ids": [5], "activity_ids": [5]},
+# packages_data = [
+#     {"packageName": "Rome Tour", "daysCount": 5, "flight_id": 1, "hotel_ids": [1], "activity_ids": [1]},
+#     {"packageName": "LA Tour", "daysCount": 10, "flight_id": 2, "hotel_ids": [2], "activity_ids": [2]},
+#     {"packageName": "Paris Tour", "daysCount": 6, "flight_id": 2, "hotel_ids": [3], "activity_ids": [3]},
+#     {"packageName": "Berlin Tour", "daysCount": 3, "flight_id": 2, "hotel_ids": [4], "activity_ids": [4]},
+#     {"packageName": "Madrid Tour", "daysCount": 4, "flight_id": 2, "hotel_ids": [5], "activity_ids": [5]},
     
-]
+# ]
 
 
 
