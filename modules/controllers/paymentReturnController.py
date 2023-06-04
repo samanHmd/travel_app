@@ -20,5 +20,5 @@ class PaymentReturnController(Resource):
         print("Request headers: ", request.headers)  # request headers
         data = request.get_json()
         print("Parsed JSON data: ", data)
-        return { "status": "success"}, 200
+        return { "status": "success", "data":data}, 200
             
