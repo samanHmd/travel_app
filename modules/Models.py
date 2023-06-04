@@ -42,7 +42,7 @@ class Package(db.Model):
     __tablename__ = 'package'
 
     id = db.Column(db.Integer, primary_key=True)
-    packageName = db.Column(db.String(50), unique=True, nullable=False)
+    packageName = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     daysCount = db.Column(db.Integer, nullable=True)
     isCustom = db.Column(db.Boolean, nullable=False)

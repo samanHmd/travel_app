@@ -52,6 +52,8 @@ class CreatePackageController(Resource):
         hotel_ids = data.get('hotel_ids', [])
         activity_ids = data.get('activity_ids', [])
 
+        
+
         # Create the new package
         new_package = Package(packageName=f"Custom package for user {user_id} on {check_in_date.strftime('%Y-%m-%d')}", daysCount=daysCount, isCustom=True)
         db.session.add(new_package)
