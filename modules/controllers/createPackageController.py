@@ -38,19 +38,19 @@ class CreatePackageController(Resource):
         return "create custom get"
 
     def post(self):
-        # data = request.get_json()
-        # flightPrice = data["flightPrice"]
-        # hotelPrice = data["hotelPrice"]
-        # activityPrice = data["activityPrice"]
-        # check_in_date = datetime.strptime(data["check_in_date"], '%Y-%m-%d')
-        # check_out_date = datetime.strptime(data["check_out_date"], '%Y-%m-%d')
-        # daysCount = check_out_date - check_in_date
-        # encoded_jwt = jwt.decode(data["api_token"], app.config['SECRET_KEY'], algorithms=["HS256"])
-        # user_id = encoded_jwt["user_id"]
-        # flight_id = data.get("flight_id", [])[0],
-        # flight_id = flight_id[0]
-        # hotel_ids = data.get('hotel_ids', [])
-        # activity_ids = data.get('activity_ids', [])
+        data = request.get_json()
+        flightPrice = data["flightPrice"]
+        hotelPrice = data["hotelPrice"]
+        activityPrice = data["activityPrice"]
+        check_in_date = datetime.strptime(data["check_in_date"], '%Y-%m-%d')
+        check_out_date = datetime.strptime(data["check_out_date"], '%Y-%m-%d')
+        daysCount = check_out_date - check_in_date
+        encoded_jwt = jwt.decode(data["api_token"], app.config['SECRET_KEY'], algorithms=["HS256"])
+        user_id = encoded_jwt["user_id"]
+        flight_id = data.get("flight_id", [])[0],
+        flight_id = flight_id[0]
+        hotel_ids = data.get('hotel_ids', [])
+        activity_ids = data.get('activity_ids', [])
 
         # # Create the new package
         # new_package = Package(packageName=f"Custom package for user {user_id} on {check_in_date.strftime('%Y-%m-%d')}", daysCount=daysCount, isCustom=True)
@@ -88,11 +88,11 @@ class CreatePackageController(Resource):
                     },
                 ],
                 mode='payment',
-                success_url=YOUR_DOMAIN + '/success.html?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url=YOUR_DOMAIN + '/cancel.html?session_id={CHECKOUT_SESSION_ID}',
+                success_url=YOUR_DOMAIN + '/?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=YOUR_DOMAIN + '/?session_id={CHECKOUT_SESSION_ID}',
                 metadata={
                     'customer_id': user_id,
-                    'package_id': new_package.id,
+                    'package_id': 1,
                     'departureDate': check_in_date.strftime('%Y-%m-%d'),
                     'returnDate': check_out_date.strftime('%Y-%m-%d'),
                 },
@@ -103,5 +103,5 @@ class CreatePackageController(Resource):
             return str(e)
 
         
-        return { "status": "success"}, 200
+        return { "status": "success", "url":checkout_session.url}, 200
             

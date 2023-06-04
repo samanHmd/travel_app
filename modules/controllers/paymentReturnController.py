@@ -15,6 +15,6 @@ class PaymentReturnController(Resource):
 
     def post(self):
         data = request.get_json()
-        print(data)
+        print("dataaaaaaaaa",data)
         return { "status": "success"}, 200
             
