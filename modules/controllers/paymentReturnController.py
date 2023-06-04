@@ -14,7 +14,9 @@ class PaymentReturnController(Resource):
         return "create custom get"
 
     def post(self):
+        print("Request data: ", request.data)  # raw request data
+        print("Request headers: ", request.headers)  # request headers
         data = request.get_json()
-        print("dataaaaaaaaa",data)
+        print("Parsed JSON data: ", data)
         return { "status": "success"}, 200
             
