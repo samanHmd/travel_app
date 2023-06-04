@@ -88,8 +88,8 @@ class CreatePackageController(Resource):
                     },
                 ],
                 mode='payment',
-                success_url=YOUR_DOMAIN + '/?success=true?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url=YOUR_DOMAIN + '/?success=true?session_id={CHECKOUT_SESSION_ID}',
+                success_url=YOUR_DOMAIN + '/?success=true&session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=YOUR_DOMAIN + '/?success=true&session_id={CHECKOUT_SESSION_ID}',
                 metadata={
                     'customer_id': user_id,
                     'package_id': 1,
