@@ -1,6 +1,12 @@
 from datetime import datetime
 
 flights_data = [
+    {"flightNumber": "FL001","departureCity": "Montreal","arrivalCountry": "Italy","arrivalCity": "Rome","departureTime": datetime.strptime('2023-07-01 08:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 700},
+    {"flightNumber": "FL002","departureCity": "Montreal","arrivalCountry": "USA","arrivalCity": "Los Angeles","departureTime": datetime.strptime('2023-07-01 08:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 600},
+    {"flightNumber": "FL004","departureCity": "Montreal","arrivalCountry": "Germany","arrivalCity": "Berlin","departureTime": datetime.strptime('2023-07-01 08:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 900},
+    {"flightNumber": "FL005","departureCity": "Montreal","arrivalCountry": "Spain","arrivalCity": "Madrid","departureTime": datetime.strptime('2023-07-01 08:00:00', '%Y-%m-%d %H:%M:%S'),"flightPrice": 700},
+
+
     #Paris
     # day 1
     {"flightNumber": "FL0101", "departureCity": "Montreal", "arrivalCountry":"France", "arrivalCity":  "Paris", "departureTime": datetime.strptime('2023-07-01 08:00:00', '%Y-%m-%d %H:%M:%S'), "flightPrice": 800},
@@ -232,7 +238,7 @@ activities_data = [
 packages_data = [
     {"packageName": "Rome Tour", "daysCount": 5, "flight_id": 1, "hotel_ids": [1], "activity_ids": [1]},
     {"packageName": "LA Tour", "daysCount": 10, "flight_id": 2, "hotel_ids": [2], "activity_ids": [2]},
-    {"packageName": "Paris Tour", "daysCount": 6, "flight_id": 2, "hotel_ids": [3], "activity_ids": [3]},
-    {"packageName": "Berlin Tour", "daysCount": 3, "flight_id": 2, "hotel_ids": [4], "activity_ids": [4]},
-    {"packageName": "Madrid Tour", "daysCount": 4, "flight_id": 2, "hotel_ids": [5], "activity_ids": [5]},
+    {"packageName": "Berlin Tour", "daysCount": 3, "flight_id": 3, "hotel_ids": [3], "activity_ids": [4]},
+    {"packageName": "Madrid Tour", "daysCount": 4, "flight_id": 4, "hotel_ids": [4], "activity_ids": [5]},
+    {"packageName": "Paris Tour", "daysCount": 6, "flight_id": 5, "hotel_ids": [5], "activity_ids": [3]},
 ]

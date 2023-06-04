@@ -140,6 +140,9 @@ class PackageController(Resource):
                 new_package_activity = PackageActivity(package_id=new_package.id, activity_id=activity_id)
                 db.session.add(new_package_activity)
 
+            new_package.price = new_package.priceCalc
+ 
+
         db.session.commit()
         return "success"
     

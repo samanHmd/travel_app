@@ -28,7 +28,15 @@ class Booking(db.Model):
     package_id = db.Column(db.Integer, db.ForeignKey('package.id'), nullable=False)
     bookingDate = db.Column(db.DateTime, default=datetime.utcnow)
     departureDate = db.Column(db.DateTime, nullable=False) 
-    returnDate = db.Column(db.DateTime, nullable=False)  
+    returnDate = db.Column(db.DateTime, nullable=False)
+
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    paymentAmount = db.Column(db.Integer, nullable=False)
+    paymentDate = db.Column(db.DateTime, default=datetime.utcnow)
+    booking_id =  db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    isSuccess = db.Column(db.Boolean, nullable=False)
+
 
 class Package(db.Model):
     __tablename__ = 'package'
@@ -47,7 +55,7 @@ class Package(db.Model):
         for flight in self.flights:
             price += flight.flightPrice
         for hotel in self.hotels:
-            price += hotel.pricePerNight
+            price += hotel.pricePerNight*self.daysCount
         for activity in self.activities:
             price += activity.price
         return price
@@ -136,6 +144,25 @@ class PackageActivity(db.Model):
 @event.listens_for(Package, 'before_update')
 def receive_before_insert(mapper, connection, package):
     package.price = package.priceCalc
+
+@event.listens_for(Package.flights, 'append')
+@event.listens_for(Package.flights, 'remove')
+def update_package_on_flights_change(package, flight, initiator):
+    package.price = package.priceCalc
+
+@event.listens_for(Package.hotels, 'append')
+@event.listens_for(Package.hotels, 'remove')
+def update_package_on_hotels_change(package, hotel, initiator):
+    package.price = package.priceCalc
+
+@event.listens_for(Package.activities, 'append')
+@event.listens_for(Package.activities, 'remove')
+def update_package_on_activities_change(package, activity, initiator):
+    package.price = package.priceCalc    
+
+
+
+
 
 #Add app context here
 with app.app_context():
