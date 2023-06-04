@@ -52,26 +52,26 @@ class CreatePackageController(Resource):
         hotel_ids = data.get('hotel_ids', [])
         activity_ids = data.get('activity_ids', [])
 
-        # # Create the new package
-        # new_package = Package(packageName=f"Custom package for user {user_id} on {check_in_date.strftime('%Y-%m-%d')}", daysCount=daysCount, isCustom=True)
-        # db.session.add(new_package)
-        # db.session.commit()  # commit to get the package id
+        # Create the new package
+        new_package = Package(packageName=f"Custom package for user {user_id} on {check_in_date.strftime('%Y-%m-%d')}", daysCount=daysCount, isCustom=True)
+        db.session.add(new_package)
+        db.session.commit()  # commit to get the package id
 
-        # # Associate flight with package
-        # new_package_flight = PackageFlight(package_id=new_package.id, flight_id=flight_id)
-        # db.session.add(new_package_flight)
+        # Associate flight with package
+        new_package_flight = PackageFlight(package_id=new_package.id, flight_id=flight_id)
+        db.session.add(new_package_flight)
 
-        # # Associate hotels with package
-        # for hotel_id in hotel_ids:
-        #     new_package_hotel = PackageHotel(package_id=new_package.id, hotel_id=hotel_id)
-        #     db.session.add(new_package_hotel)
+        # Associate hotels with package
+        for hotel_id in hotel_ids:
+            new_package_hotel = PackageHotel(package_id=new_package.id, hotel_id=hotel_id)
+            db.session.add(new_package_hotel)
 
-        # # Associate activities with package
-        # for activity_id in activity_ids:
-        #     new_package_activity = PackageActivity(package_id=new_package.id, activity_id=activity_id)
-        #     db.session.add(new_package_activity)
+        # Associate activities with package
+        for activity_id in activity_ids:
+            new_package_activity = PackageActivity(package_id=new_package.id, activity_id=activity_id)
+            db.session.add(new_package_activity)
 
-        # db.session.commit()
+        db.session.commit()
 
         try:
             checkout_session = stripe.checkout.Session.create(
@@ -97,8 +97,7 @@ class CreatePackageController(Resource):
                     'returnDate': check_out_date.strftime('%Y-%m-%d'),
                 },
             )
-            # session = stripe.checkout.Session.retrieve(session_id)
-            # total_amount = session.amount_total 
+            
         except Exception as e:
             return str(e)
 

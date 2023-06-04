@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify,redirect
 from flask_restful import Api, Resource, fields, marshal_with, marshal
-from modules.Models import User, Package, PackageActivity, PackageFlight, PackageHotel
+from modules.Models import Booking, Payment
 import jwt
 from datetime import datetime, timedelta
 from modules import db, app
@@ -14,11 +14,33 @@ class PaymentReturnController(Resource):
         return "create custom get"
 
     def post(self):
-        
-        print("Request data 0: ", request)  # raw request data
-        print("Request data: ", request.data)  # raw request data
-        print("Request headers: ", request.headers)  # request headers
         data = request.get_json()
-        print("Parsed JSON data: ", data)
-        return { "status": "success", "data":data['session_id']}, 200
+        status = data['status']
+        session = stripe.checkout.Session.retrieve(data['session_id'])
+        total_amount = session.amount_total 
+        customer_id = session.metadata.get('customer_id')
+        package_id = session.metadata.get('package_id')
+        departure_date = datetime.strptime(session.metadata.get('departureDate'), '%Y-%m-%d')
+        return_date = datetime.strptime(session.metadata.get('returnDate'), '%Y-%m-%d')
+
+        # Create the new booking
+        new_booking = Booking(customer_id=customer_id, package_id=package_id, departureDate=departure_date, returnDate = return_date )
+        db.session.add(new_booking)
+        db.session.commit()  # commit to get the package id
+
+        
+
+        if status == 'success':
+            # Create the new booking
+            new_payment = Payment(paymentAmount=total_amount, booking_id=new_booking.id, isSuccess = True )
+            db.session.add(new_booking)
+            db.session.commit()  # commit to get the package id
+        elif status == 'fail':
+            # Create the new booking
+            new_payment = Payment(paymentAmount=total_amount, booking_id=new_booking.id, isSuccess = False )
+            db.session.add(new_booking)
+            db.session.commit()  # commit to get the package id
+            
+
+        return { "status": "success"}, 200
             
