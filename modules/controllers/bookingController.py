@@ -46,6 +46,8 @@ class BookingController(Resource):
         data = request.get_json()
         encoded_jwt = jwt.decode(data["api_token"], app.config['SECRET_KEY'], algorithms=["HS256"])
         user_id = encoded_jwt["user_id"]
+        check_in_date = datetime.strptime(data["check_in_date"], '%Y-%m-%d')
+        check_out_date = datetime.strptime(data["check_out_date"], '%Y-%m-%d')
 
         try:
             checkout_session = stripe.checkout.Session.create(
@@ -67,8 +69,8 @@ class BookingController(Resource):
                 metadata={
                     'customer_id': user_id,
                     'package_id': 1,
-                    'departureDate': data["check_in_date"].strftime('%Y-%m-%d'),
-                    'returnDate': data["check_out_date"].strftime('%Y-%m-%d'),
+                    'departureDate': check_in_date.strftime('%Y-%m-%d'),
+                    'returnDate': check_out_date.strftime('%Y-%m-%d'),
                 },
             )
             
