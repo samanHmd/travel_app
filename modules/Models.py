@@ -97,13 +97,6 @@ class Hotel(db.Model):
     hotelName = db.Column(db.String(50), nullable=False)
     cityName = db.Column(db.String(50), nullable=False)
     pricePerNight = db.Column(db.Integer, nullable=False)
-
-    # @property
-    # def totalPrice(self):
-    #     duration = self.checkOutDate - self.checkInDate
-    #     num_nights = duration.days
-    #     priceTotal = num_nights * self.pricePerNight
-    #     return priceTotal
     
     def as_dict(self):
         return {c.key: getattr(self, c.key).isoformat() if isinstance(getattr(self, c.key), datetime) else getattr(self, c.key) for c in class_mapper(self.__class__).columns}

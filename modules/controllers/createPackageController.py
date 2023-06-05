@@ -30,8 +30,6 @@ class CreatePackageController(Resource):
                 success_url=YOUR_DOMAIN + '/success.html?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url=YOUR_DOMAIN + '/cancel.html?session_id={CHECKOUT_SESSION_ID}',
             )
-            # session = stripe.checkout.Session.retrieve(session_id)
-            # total_amount = session.amount_total 
         except Exception as e:
             return str(e)
         print(checkout_session.url)
@@ -40,8 +38,8 @@ class CreatePackageController(Resource):
     def post(self):
         data = request.get_json()
         flightPrice = data["flightPrice"]
-        hotelPrice = data["hotelPrice"]
-        activityPrice = data["activityPrice"]
+        hotelPrices = data.get('hotelPrice',[])
+        activityPrices = data.get('activityPrice',[])
         check_in_date = datetime.strptime(data["check_in_date"], '%Y-%m-%d')
         check_out_date = datetime.strptime(data["check_out_date"], '%Y-%m-%d')
         daysCount = check_out_date - check_in_date
@@ -51,24 +49,32 @@ class CreatePackageController(Resource):
         flight_id = flight_id[0]
         hotel_ids = data.get('hotel_ids', [])
         activity_ids = data.get('activity_ids', [])
-
+        totalPrice = 0
         
 
-        # Create the new package
+        for hotelPrice in hotelPrices:
+            totalPrice = totalPrice + hotelPrice
+            print('total', totalPrice)
+
+        for activityPrice in activityPrices:
+            totalPrice = totalPrice + activityPrice
+
+        totalPrice = totalPrice + flightPrice         
+        
         new_package = Package(packageName=f"Custom package for user {user_id} on {check_in_date.strftime('%Y-%m-%d')}", daysCount=daysCount, isCustom=True)
         db.session.add(new_package)
-        db.session.commit()  # commit to get the package id
-
-        # Associate flight with package
+        db.session.commit()  
+        new_package.price = totalPrice
+        
         new_package_flight = PackageFlight(package_id=new_package.id, flight_id=flight_id)
         db.session.add(new_package_flight)
 
-        # Associate hotels with package
+        
         for hotel_id in hotel_ids:
             new_package_hotel = PackageHotel(package_id=new_package.id, hotel_id=hotel_id)
             db.session.add(new_package_hotel)
 
-        # Associate activities with package
+        
         for activity_id in activity_ids:
             new_package_activity = PackageActivity(package_id=new_package.id, activity_id=activity_id)
             db.session.add(new_package_activity)
@@ -84,7 +90,7 @@ class CreatePackageController(Resource):
                         'product_data': {
                           'name': 'Custom Package',
                         },
-                        'unit_amount': 50,
+                        'unit_amount': totalPrice,
                       },
                       'quantity': 1,
                     },

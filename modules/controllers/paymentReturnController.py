@@ -23,23 +23,23 @@ class PaymentReturnController(Resource):
         departure_date = datetime.strptime(session.metadata.get('departureDate'), '%Y-%m-%d')
         return_date = datetime.strptime(session.metadata.get('returnDate'), '%Y-%m-%d')
 
-        # Create the new booking
+        
         new_booking = Booking(customer_id=customer_id, package_id=package_id, departureDate=departure_date, returnDate = return_date )
         db.session.add(new_booking)
-        db.session.commit()  # commit to get the package id
+        db.session.commit()  
 
         
 
         if status == 'success':
-            # Create the new booking
+            
             new_payment = Payment(paymentAmount=total_amount, booking_id=new_booking.id, isSuccess = True )
-            db.session.add(new_booking)
-            db.session.commit()  # commit to get the package id
+            db.session.add(new_payment)
+            db.session.commit()  
         elif status == 'fail':
-            # Create the new booking
+            
             new_payment = Payment(paymentAmount=total_amount, booking_id=new_booking.id, isSuccess = False )
-            db.session.add(new_booking)
-            db.session.commit()  # commit to get the package id
+            db.session.add(new_payment)
+            db.session.commit()  
             
 
         return { "status": "success", "test":status}, 200
