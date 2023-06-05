@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from sshtunnel import SSHTunnelForwarder
 import os
+from flask_mail import Mail, Message
 
 
 app = Flask(__name__)
@@ -25,7 +26,6 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://admin:Ss40000072!@127.0.0.1:{server.local_bind_port}/travelDB'
     import atexit
     atexit.register(server.stop)
-
 
 
 

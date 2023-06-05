@@ -5,6 +5,10 @@ from modules import bcrypt, app, db
 import jwt
 from datetime import datetime, timedelta
 import stripe
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+import ssl
 
 stripe.api_key = 'sk_test_Hrs6SAopgFPF0bZXSN3f6ELN'
 YOUR_DOMAIN = 'http://3.128.182.187/static-page'
@@ -14,7 +18,28 @@ YOUR_DOMAIN = 'http://3.128.182.187/static-page'
 
 class BookingController(Resource):
     def get(self):
-        
+        if (not os.environ.get('PYTHONHTTPSVERIFY', '') and
+            getattr(ssl, '_create_unverified_context', None)): 
+            ssl._create_default_https_context = ssl._create_unverified_context
+        message = Mail(
+            from_email='travelapplicationconcordia@gmail.com',
+            to_emails='saman.hamidi1993@gmail.com',
+        )
+        message.template_id = 'd-3f55eb477da64e6f943fbe47a69b4fb8'  # Replace with your template ID
+
+        message.dynamic_template_data = {
+        'name': 'Recipient',  # The 'name' here is a placeholder in your template
+        # Add more placeholders as needed
+            }
+        try:
+            print(os.environ.get('SENDGRID_API_KEY'))
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e.message)
         return 'booking get'
 
     def post(self):
