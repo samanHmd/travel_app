@@ -10,6 +10,7 @@ from modules.controllers.packageController import PackageController
 from modules.controllers.receiveDataController import ReceiveDataController
 from modules.controllers.createPackageController import CreatePackageController
 from modules.controllers.paymentReturnController import PaymentReturnController
+from modules.controllers.bookingController import BookingController
 
 api = Api(app)
 
@@ -22,3 +23,4 @@ api.add_resource(PackageController, '/packages')
 api.add_resource(ReceiveDataController, '/receiveData')
 api.add_resource(CreatePackageController, '/createPackage')
 api.add_resource(PaymentReturnController, '/receiveStatusPayment')
+api.add_resource(BookingController, '/booking')

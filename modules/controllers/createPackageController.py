@@ -50,11 +50,14 @@ class CreatePackageController(Resource):
         hotel_ids = data.get('hotel_ids', [])
         activity_ids = data.get('activity_ids', [])
         totalPrice = 0
+        temp = 0
         
 
         for hotelPrice in hotelPrices:
-            totalPrice = totalPrice + hotelPrice
-            print('total', totalPrice)
+            temp = temp + hotelPrice
+
+        temp = temp/len(hotelPrices)  
+        totalPrice = temp*daysCount
 
         for activityPrice in activityPrices:
             totalPrice = totalPrice + activityPrice
