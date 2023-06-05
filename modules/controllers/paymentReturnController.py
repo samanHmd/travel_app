@@ -42,5 +42,5 @@ class PaymentReturnController(Resource):
             db.session.commit()  # commit to get the package id
             
 
-        return { "status": "success"}, 200
+        return { "status": "success", "test":status}, 200
             
