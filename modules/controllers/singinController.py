@@ -28,7 +28,7 @@ class SignInController(Resource):
             packages = Package.query.all()
             expiration_time = (datetime.utcnow() + timedelta(seconds=172800)).isoformat()
             encoded_jwt = jwt.encode({'user_id':user.id, 'expiration': expiration_time}, app.config['SECRET_KEY'], algorithm="HS256")
-            return {"status": "success","api_token": encoded_jwt, "packages": [package.as_dict() for package in packages]}, 200
+            return {"status": "success","api_token": encoded_jwt, "packages": [package.as_dict() for package in packages], "userName": user.userName}, 200
             
 
         

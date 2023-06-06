@@ -25,7 +25,7 @@ class AgentSignupConroller(Resource):
             db.session.commit()
             agent = Agent.query.filter_by(userName="agent").first()
             encoded_jwt = jwt.encode({'user_id':agent.id, 'expiration': str(datetime.utcnow() + timedelta(seconds=172800))}, app.config['SECRET_KEY'], algorithm="HS256")
-            return {"status": "success","api_token": encoded_jwt}, 200
+            return {"status": "success","api_token": encoded_jwt, "userName": agent.userName}, 200
             
 
         
