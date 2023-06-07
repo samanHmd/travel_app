@@ -57,12 +57,12 @@ class CreatePackageController(Resource):
             temp = temp + hotelPrice
 
         temp = temp/len(hotelPrices)  
-        totalPrice = temp*daysCount
+        totalPrice = temp*daysCount.days
 
         for activityPrice in activityPrices:
             totalPrice = totalPrice + activityPrice
 
-        totalPrice = totalPrice + flightPrice         
+        totalPrice = totalPrice + flightPrice   
         
         new_package = Package(packageName=f"Custom package for user {user_id} on {check_in_date.strftime('%Y-%m-%d')}", daysCount=daysCount, isCustom=True)
         db.session.add(new_package)
@@ -93,7 +93,7 @@ class CreatePackageController(Resource):
                         'product_data': {
                           'name': 'Custom Package',
                         },
-                        'unit_amount': totalPrice,
+                        'unit_amount': int(totalPrice),
                       },
                       'quantity': 1,
                     },

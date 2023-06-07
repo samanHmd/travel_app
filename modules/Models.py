@@ -29,6 +29,8 @@ class Booking(db.Model):
     bookingDate = db.Column(db.DateTime, default=datetime.utcnow)
     departureDate = db.Column(db.DateTime, nullable=False) 
     returnDate = db.Column(db.DateTime, nullable=False)
+    def as_dict(self):
+        return {c.key: getattr(self, c.key).isoformat() if isinstance(getattr(self, c.key), datetime) else getattr(self, c.key) for c in class_mapper(self.__class__).columns}
 
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

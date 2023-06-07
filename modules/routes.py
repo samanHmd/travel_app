@@ -11,6 +11,8 @@ from modules.controllers.receiveDataController import ReceiveDataController
 from modules.controllers.createPackageController import CreatePackageController
 from modules.controllers.paymentReturnController import PaymentReturnController
 from modules.controllers.bookingController import BookingController
+from modules.controllers.viewBookingController import ViewBookingController
+from modules.controllers.reportController import ReportController
 
 api = Api(app)
 
@@ -24,3 +26,5 @@ api.add_resource(ReceiveDataController, '/receiveData')
 api.add_resource(CreatePackageController, '/createPackage')
 api.add_resource(PaymentReturnController, '/receiveStatusPayment')
 api.add_resource(BookingController, '/booking')
+api.add_resource(ViewBookingController, '/viewBooking')
+api.add_resource(ReportController, '/report')
