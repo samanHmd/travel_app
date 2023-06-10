@@ -1,30 +1,38 @@
 from flask import Flask
 from flask_restful import Api, Resource
 from modules import app
-from modules.controllers.homeController import HomeController
-from modules.controllers.singinController import SignInController
-from modules.controllers.loginController import LoginController
-from modules.controllers.agentLoginController import AgentLoginController
-from modules.controllers.agentSignupController import AgentSignupConroller
-from modules.controllers.packageController import PackageController
-from modules.controllers.receiveDataController import ReceiveDataController
-from modules.controllers.createPackageController import CreatePackageController
-from modules.controllers.paymentReturnController import PaymentReturnController
-from modules.controllers.bookingController import BookingController
-from modules.controllers.viewBookingController import ViewBookingController
-from modules.controllers.reportController import ReportController
+
+
+from modules.userManagement.controllers.singinController import SignInController
+from modules.userManagement.controllers.loginController import LoginController
+from modules.userManagement.controllers.agentLoginController import AgentLoginController
+from modules.userManagement.controllers.agentSignupController import AgentSignupConroller
+from modules.userManagement.controllers.reportController import ReportController
+
+from modules.packageManagement.controllers.packageController import PackageController
+from modules.packageManagement.controllers.receiveDataController import ReceiveDataController
+from modules.packageManagement.controllers.createPackageController import CreatePackageController
+
+from modules.bookingManagement.controllers.paymentReturnController import PaymentReturnController
+from modules.bookingManagement.controllers.bookingController import BookingController
+from modules.bookingManagement.controllers.viewBookingController import ViewBookingController
+
 
 api = Api(app)
 
-api.add_resource(HomeController, '/')
+#userManagement Routes
 api.add_resource(SignInController, '/register')
 api.add_resource(LoginController, '/login')
 api.add_resource(AgentLoginController, '/agentLogin')
 api.add_resource(AgentSignupConroller, '/agentSignup')
+api.add_resource(ReportController, '/report')
+
+#packageManagement Routes
 api.add_resource(PackageController, '/packages')
 api.add_resource(ReceiveDataController, '/receiveData')
 api.add_resource(CreatePackageController, '/createPackage')
+
+#bookingManagement Routes
 api.add_resource(PaymentReturnController, '/receiveStatusPayment')
 api.add_resource(BookingController, '/booking')
 api.add_resource(ViewBookingController, '/viewBooking')
-api.add_resource(ReportController, '/report')

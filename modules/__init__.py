@@ -33,4 +33,8 @@ app.config['SECRET_KEY'] = '94fjfj@/afd+kdioeur8349j3dljfa38]\kdu'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
+#Add app context here
+with app.app_context():
+    db.create_all()   
+
 from modules import routes
