@@ -3,6 +3,7 @@ from flask_restful import Api, Resource, fields, marshal_with
 from faker import Faker
 import random
 from datetime import datetime, timedelta
+from modules.userManagement.models.user import User
 from modules.packageManagement.models.package import Package, PackageHotel, PackageFlight, PackageActivity
 from modules.packageManagement.models.flight import Flight
 from modules.packageManagement.models.hotel import Hotel 
@@ -58,8 +59,9 @@ from modules.data import flights_data, hotels_data, activities_data, packages_da
 class PackageController(Resource):
     #@marshal_with(package_field)
     def get(self):
-        packages = Package.query.all()
-        return jsonify([package.as_dict() for package in packages])
+        getPackages_response = User.getPackages();
+        return getPackages_response;
+        
         
 
     def post(self):
