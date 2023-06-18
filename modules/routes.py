@@ -16,6 +16,7 @@ from modules.packageManagement.controllers.createPackageController import Create
 from modules.bookingManagement.controllers.paymentReturnController import PaymentReturnController
 from modules.bookingManagement.controllers.bookingController import BookingController
 from modules.bookingManagement.controllers.viewBookingController import ViewBookingController
+from modules.bookingManagement.controllers.viewPaymentController import ViewPaymentController
 
 
 api = Api(app)
@@ -36,3 +37,4 @@ api.add_resource(CreatePackageController, '/createPackage')
 api.add_resource(PaymentReturnController, '/receiveStatusPayment')
 api.add_resource(BookingController, '/booking')
 api.add_resource(ViewBookingController, '/viewBooking')
+api.add_resource(ViewPaymentController, '/viewPayment')

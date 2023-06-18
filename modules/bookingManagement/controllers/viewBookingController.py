@@ -12,9 +12,8 @@ from datetime import datetime, timedelta
 
 class ViewBookingController(Resource):
     def get(self):
-        data = request.get_json()
-        decoded_jwt = jwt.decode(data.get('api_token'), app.config['SECRET_KEY'], algorithms=["HS256"])
-        return "success"
+        bookings = Booking.query.all()
+        return {"status": "success", "bookings": [booking.as_dict() for booking in bookings]}, 200
 
     def post(self):
         data = request.get_json()
