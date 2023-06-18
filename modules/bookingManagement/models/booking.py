@@ -100,3 +100,10 @@ class Booking(db.Model):
 
         else:
             return { "status": "This Costumer Has No Booking" }
+        
+
+
+
+
+with app.app_context():
+    db.create_all()           

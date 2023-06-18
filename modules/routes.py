@@ -12,10 +12,12 @@ from modules.userManagement.controllers.reportController import ReportController
 from modules.packageManagement.controllers.packageController import PackageController
 from modules.packageManagement.controllers.receiveDataController import ReceiveDataController
 from modules.packageManagement.controllers.createPackageController import CreatePackageController
+from modules.packageManagement.controllers.preDefineCreateController import PreDefineCreateController
 
 from modules.bookingManagement.controllers.paymentReturnController import PaymentReturnController
 from modules.bookingManagement.controllers.bookingController import BookingController
 from modules.bookingManagement.controllers.viewBookingController import ViewBookingController
+from modules.bookingManagement.controllers.viewPaymentController import ViewPaymentController
 
 
 api = Api(app)
@@ -31,8 +33,10 @@ api.add_resource(ReportController, '/report')
 api.add_resource(PackageController, '/packages')
 api.add_resource(ReceiveDataController, '/receiveData')
 api.add_resource(CreatePackageController, '/createPackage')
+api.add_resource(PreDefineCreateController, '/preDefineCreate')
 
 #bookingManagement Routes
 api.add_resource(PaymentReturnController, '/receiveStatusPayment')
 api.add_resource(BookingController, '/booking')
 api.add_resource(ViewBookingController, '/viewBooking')
+api.add_resource(ViewPaymentController, '/viewPayment')

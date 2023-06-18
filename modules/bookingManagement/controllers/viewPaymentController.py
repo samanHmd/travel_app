@@ -10,12 +10,14 @@ from datetime import datetime, timedelta
 
 
 
-class ViewBookingController(Resource):
+class ViewPaymentController(Resource):
     def get(self):
-        bookings = Booking.query.all()
-        return {"status": "success", "bookings": [booking.as_dict() for booking in bookings]}, 200
+        data = request.get_json()
+        decoded_jwt = jwt.decode(data.get('api_token'), app.config['SECRET_KEY'], algorithms=["HS256"])
+        return "success"
 
     def post(self):
         data = request.get_json()
-        viewBooking_response = Booking.viewBooking(data)
-        return viewBooking_response
+        decoded_jwt = jwt.decode(data.get('api_token'), app.config['SECRET_KEY'], algorithms=["HS256"])
+        print(decoded_jwt["user_id"])
+        return decoded_jwt

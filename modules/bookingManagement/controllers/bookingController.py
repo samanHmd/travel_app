@@ -25,3 +25,7 @@ class BookingController(Resource):
         data = request.get_json()
         booking_response = Booking.booking(data)
         return booking_response
+    
+
+    def put(self):
+        return "success"
