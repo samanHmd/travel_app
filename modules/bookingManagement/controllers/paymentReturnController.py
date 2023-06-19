@@ -35,7 +35,7 @@ class PaymentReturnController(Resource):
         return_date = datetime.strptime(session.metadata.get('returnDate'), '%Y-%m-%d')
 
         
-        new_booking = Booking(customer_id=customer_id, package_id=package_id, departureDate=departure_date, returnDate = return_date )
+        new_booking = Booking(customer_id=customer_id, package_id=package_id, departureDate=departure_date, returnDate = return_date, isCanceled = False )
         db.session.add(new_booking)
         db.session.commit()  
 

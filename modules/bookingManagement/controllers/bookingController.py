@@ -29,3 +29,11 @@ class BookingController(Resource):
 
     def put(self):
         return "success"
+    
+    def delete(self):
+        data = request.get_json()
+        
+        booking = Booking.query.get(data['bookingId'])
+        
+        print(booking)
+        return "success"
