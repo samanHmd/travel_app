@@ -32,8 +32,8 @@ class BookingController(Resource):
     
     def delete(self):
         data = request.get_json()
-        
         booking = Booking.query.get(data['bookingId'])
-        
-        print(booking)
-        return "success"
+        booking.isCanceled = True
+        db.session.commit() 
+        bookings = Booking.query.all()
+        return { "status": "Success", "bookings": [booking.as_dict() for booking in bookings] }

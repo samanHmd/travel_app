@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from flask_restful import Api, Resource, fields, marshal_with
+from flask_restful import Resource, request
 from faker import Faker
 import random
 from datetime import datetime, timedelta
@@ -88,17 +88,17 @@ class PackageController(Resource):
             db.session.commit()  
 
             
-            new_package_flight = PackageFlight(package_id=new_package.id, flight_id=package["flight_id"])
+            new_package_flight = PackageFlight(packageId=new_package.id, flightId=package["flightId"])
             db.session.add(new_package_flight)
 
             
             for hotel_id in package["hotel_ids"]:
-                new_package_hotel = PackageHotel(package_id=new_package.id, hotel_id=hotel_id)
+                new_package_hotel = PackageHotel(packageId=new_package.id, hotelId=hotel_id)
                 db.session.add(new_package_hotel)
 
             
             for activity_id in package["activity_ids"]:
-                new_package_activity = PackageActivity(package_id=new_package.id, activity_id=activity_id)
+                new_package_activity = PackageActivity(packageId=new_package.id, activityId=activity_id)
                 db.session.add(new_package_activity)
 
             new_package.price = new_package.priceCalc
@@ -106,5 +106,19 @@ class PackageController(Resource):
 
         db.session.commit()
         return "success"
+    
+    def delete(self):
+        data = request.get_json()
+        packageId = data.get('packageId')
+
+        package = Package.query.get(packageId)
+
+        if package:
+            db.session.delete(package)
+            db.session.commit()
+            packages = Package.query.all()
+            return {"status": "success", "message": f"Package with id {packageId} has been deleted.", "packages": [package.as_dict() for package in packages]}, 200
+        else:
+            return {"status": "error", "message": f"No package found with id {packageId}."}, 404
     
     

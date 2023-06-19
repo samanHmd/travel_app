@@ -48,18 +48,18 @@ class Package(db.Model):
 
 class PackageFlight(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    package_id = db.Column(db.Integer, db.ForeignKey('package.id'))
-    flight_id = db.Column(db.Integer, db.ForeignKey('flight.id'))
+    packageId = db.Column(db.Integer, db.ForeignKey('package.id'))
+    flightId = db.Column(db.Integer, db.ForeignKey('flight.id'))
 
 class PackageHotel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    package_id = db.Column(db.Integer, db.ForeignKey('package.id'))
-    hotel_id = db.Column(db.Integer, db.ForeignKey('hotel.id'))
+    packageId = db.Column(db.Integer, db.ForeignKey('package.id'))
+    hotelId = db.Column(db.Integer, db.ForeignKey('hotel.id'))
 
 class PackageActivity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    package_id = db.Column(db.Integer, db.ForeignKey('package.id'))
-    activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))
+    packageId = db.Column(db.Integer, db.ForeignKey('package.id'))
+    activityId = db.Column(db.Integer, db.ForeignKey('activity.id'))
 
 
 # @event.listens_for(Hotel, 'before_insert')

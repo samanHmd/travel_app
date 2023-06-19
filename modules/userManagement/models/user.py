@@ -122,8 +122,8 @@ class User(db.Model):
             return {"error": "Invalid api token."}, 400
 
         user_id = decoded_jwt["user_id"]
-        flight_id = data.get("flight_id"),
-        flight_id = flight_id[0]
+        flightId = data.get("flight_id"),
+        flightId = flightId[0]
         hotel_ids = data.get('hotel_ids', [])
         activity_ids = data.get('activity_ids', [])
         totalPrice = 0
@@ -146,17 +146,17 @@ class User(db.Model):
         db.session.commit()  
         new_package.price = totalPrice
         
-        new_package_flight = PackageFlight(package_id=new_package.id, flight_id=flight_id)
+        new_package_flight = PackageFlight(packageId=new_package.id, flightId=flightId)
         db.session.add(new_package_flight)
 
         
         for hotel_id in hotel_ids:
-            new_package_hotel = PackageHotel(package_id=new_package.id, hotel_id=hotel_id)
+            new_package_hotel = PackageHotel(packageId=new_package.id, hotelId=hotel_id)
             db.session.add(new_package_hotel)
 
         
         for activity_id in activity_ids:
-            new_package_activity = PackageActivity(package_id=new_package.id, activity_id=activity_id)
+            new_package_activity = PackageActivity(packageId=new_package.id, activityId=activity_id)
             db.session.add(new_package_activity)
 
         new_package.price = new_package.priceCalc

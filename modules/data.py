@@ -236,10 +236,10 @@ activities_data = [
 ]
 
 packages_data = [
-    {"packageName": "Rome Tour", "daysCount": 5, "flight_id": 1, "hotel_ids": [1], "activity_ids": [1]},
-    {"packageName": "LA Tour", "daysCount": 10, "flight_id": 2, "hotel_ids": [2], "activity_ids": [2,3,4,5]},
-    {"packageName": "Berlin Tour", "daysCount": 3, "flight_id": 3, "hotel_ids": [3], "activity_ids": [4,1]},
-    {"packageName": "Madrid Tour", "daysCount": 4, "flight_id": 4, "hotel_ids": [4], "activity_ids": [5]},
-    {"packageName": "Paris Tour", "daysCount": 6, "flight_id": 5, "hotel_ids": [5], "activity_ids": [1,4]},
-    {"packageName": "Nice Tour", "daysCount": 7, "flight_id": 30, "hotel_ids": [14], "activity_ids": [4,5]},
+    {"packageName": "Rome Tour", "daysCount": 5, "flightId": 1, "hotel_ids": [1], "activity_ids": [1]},
+    {"packageName": "LA Tour", "daysCount": 10, "flightId": 2, "hotel_ids": [2], "activity_ids": [2,3,4,5]},
+    {"packageName": "Berlin Tour", "daysCount": 3, "flightId": 3, "hotel_ids": [3], "activity_ids": [4,1]},
+    {"packageName": "Madrid Tour", "daysCount": 4, "flightId": 4, "hotel_ids": [4], "activity_ids": [5]},
+    {"packageName": "Paris Tour", "daysCount": 6, "flightId": 5, "hotel_ids": [5], "activity_ids": [1,4]},
+    {"packageName": "Nice Tour", "daysCount": 7, "flightId": 30, "hotel_ids": [14], "activity_ids": [4,5]},
 ]

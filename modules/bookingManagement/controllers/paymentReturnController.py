@@ -29,17 +29,17 @@ class PaymentReturnController(Resource):
         status = data['status']
         session = stripe.checkout.Session.retrieve(data['session_id'])
         total_amount = session.amount_total 
-        customer_id = session.metadata.get('customer_id')
-        package_id = session.metadata.get('package_id')
+        customerId = session.metadata.get('customerId')
+        packageId = session.metadata.get('package_id')
         departure_date = datetime.strptime(session.metadata.get('departureDate'), '%Y-%m-%d')
         return_date = datetime.strptime(session.metadata.get('returnDate'), '%Y-%m-%d')
 
         
-        new_booking = Booking(customer_id=customer_id, package_id=package_id, departureDate=departure_date, returnDate = return_date, isCanceled = False )
+        new_booking = Booking(customerId=customerId, packageId=packageId, departureDate=departure_date, returnDate = return_date, isCanceled = False )
         db.session.add(new_booking)
         db.session.commit()  
 
-        user = User.query.get(customer_id)
+        user = User.query.get(customerId)
 
         #Email
         if (not os.environ.get('PYTHONHTTPSVERIFY', '') and
@@ -67,12 +67,12 @@ class PaymentReturnController(Resource):
 
         if status == 'success':
             
-            new_payment = Payment(paymentAmount=total_amount, booking_id=new_booking.id, isSuccess = True )
+            new_payment = Payment(paymentAmount=total_amount, bookingId=new_booking.id, isSuccess = True )
             db.session.add(new_payment)
             db.session.commit()  
         elif status == 'fail':
             
-            new_payment = Payment(paymentAmount=total_amount, booking_id=new_booking.id, isSuccess = False )
+            new_payment = Payment(paymentAmount=total_amount, bookingId=new_booking.id, isSuccess = False )
             db.session.add(new_payment)
             db.session.commit()  
             

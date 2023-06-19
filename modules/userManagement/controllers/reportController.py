@@ -26,7 +26,7 @@ class ReportController(Resource):
         user = User.query.filter_by(userName=data.get('userName')).first()
         if data["start_date"] is not None:
             start_date = datetime.strptime(data["start_date"], '%Y-%m-%d')
-            bookings = Booking.query.filter(Booking.customer_id == user.id, Booking.bookingDate >= start_date).all()
+            bookings = Booking.query.filter(Booking.customerId == user.id, Booking.bookingDate >= start_date).all()
             if bookings:
                 return { "status": "success", "data": [booking.as_dict() for booking in bookings] }
 
@@ -34,7 +34,7 @@ class ReportController(Resource):
                 return { "status": "This Customer Has No Booking With That Specific Date" }
 
         elif data["start_date"] is None:
-            bookings = Booking.query.filter(Booking.customer_id == user.id).all()
+            bookings = Booking.query.filter(Booking.customerId == user.id).all()
             if bookings:
                 return { "status": "success", "data": [booking.as_dict() for booking in bookings] }
 

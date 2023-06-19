@@ -16,8 +16,8 @@ YOUR_DOMAIN = 'http://3.128.182.187/static-page'
 
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    package_id = db.Column(db.Integer, db.ForeignKey('package.id'), nullable=False)
+    customerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    packageId = db.Column(db.Integer, db.ForeignKey('package.id'), nullable=False)
     bookingDate = db.Column(db.DateTime, default=datetime.utcnow)
     departureDate = db.Column(db.DateTime, nullable=False) 
     returnDate = db.Column(db.DateTime, nullable=False)

@@ -9,7 +9,7 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     paymentAmount = db.Column(db.Integer, nullable=False)
     paymentDate = db.Column(db.DateTime, default=datetime.utcnow)
-    booking_id =  db.Column(db.Integer, db.ForeignKey('booking.id'), nullable=False)
+    bookingId =  db.Column(db.Integer, db.ForeignKey('booking.id'), nullable=False)
     isSuccess = db.Column(db.Boolean, nullable=False)
 
 

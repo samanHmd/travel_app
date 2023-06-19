@@ -41,17 +41,17 @@ class PreDefineCreateController(Resource):
 
         
         for flight in flights:
-            new_package_flight = PackageFlight(package_id=new_package.id, flight_id=flight.id)
+            new_package_flight = PackageFlight(packageId=new_package.id, flightId=flight.id)
             db.session.add(new_package_flight)
 
         
         for hotel in hotels:
-            new_package_hotel = PackageHotel(package_id=new_package.id, hotel_id=hotel.id)
+            new_package_hotel = PackageHotel(packageId=new_package.id, hotelId=hotel.id)
             db.session.add(new_package_hotel)
 
         
         for activity in activities:
-            new_package_activity = PackageActivity(package_id=new_package.id, activity_id=activity.id)
+            new_package_activity = PackageActivity(packageId=new_package.id, activityId=activity.id)
             db.session.add(new_package_activity)
         new_package.price = new_package.priceCalc
         db.session.commit()
@@ -63,11 +63,11 @@ class PreDefineCreateController(Resource):
     def put(self):
         data = request.get_json()
 
-        package_id = data.get('package_id')
-        if not package_id:
+        packageId = data.get('package_id')
+        if not packageId:
             return {"error": "package_id is required."}, 400
 
-        package = Package.query.get(package_id)
+        package = Package.query.get(packageId)
         if not package:
             return {"error": "No package found with the provided id."}, 404
 
