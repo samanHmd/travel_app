@@ -20,7 +20,6 @@ class PaymentReturnController(Resource):
 
     def post(self):
         data = request.get_json()
-
         required_fields = ['status', 'session_id']
         for field in required_fields:
             if field not in data or not data[field]:
@@ -29,12 +28,11 @@ class PaymentReturnController(Resource):
         status = data['status']
         session = stripe.checkout.Session.retrieve(data['session_id'])
         total_amount = session.amount_total 
-        customerId = session.metadata.get('customerId')
+        customerId = session.metadata.get('customer_id')
         packageId = session.metadata.get('package_id')
         departure_date = datetime.strptime(session.metadata.get('departureDate'), '%Y-%m-%d')
         return_date = datetime.strptime(session.metadata.get('returnDate'), '%Y-%m-%d')
 
-        
         new_booking = Booking(customerId=customerId, packageId=packageId, departureDate=departure_date, returnDate = return_date, isCanceled = False )
         db.session.add(new_booking)
         db.session.commit()  
