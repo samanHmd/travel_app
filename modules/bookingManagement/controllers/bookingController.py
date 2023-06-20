@@ -40,6 +40,8 @@ class BookingController(Resource):
 
         user = User.query.get(booking.customerId)
 
+        print(user.email)
+        print(user.name)
         #Email
         if (not os.environ.get('PYTHONHTTPSVERIFY', '') and
             getattr(ssl, '_create_unverified_context', None)): 

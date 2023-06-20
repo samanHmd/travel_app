@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 
 class ViewBookingController(Resource):
     def get(self):
-        bookings = Booking.query.all()
+        bookings = Booking.query.filter(Booking.isCanceled == False).all()
         return {"status": "success", "bookings": [booking.as_dict() for booking in bookings]}, 200
 
     def post(self):
