@@ -171,7 +171,7 @@ class User(db.Model):
                         'product_data': {
                           'name': 'Custom Package',
                         },
-                        'unit_amount': int(totalPrice),
+                        'unit_amount': int(totalPrice)*100,
                       },
                       'quantity': 1,
                     },
