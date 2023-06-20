@@ -15,6 +15,9 @@ from datetime import datetime, timedelta
 from modules import db, app
 from modules.packageManagement.models.package import Package, PackageActivity, PackageFlight, PackageHotel
 import stripe
+from sqlalchemy import inspect
+import logging
+
 
 stripe.api_key = 'sk_test_Hrs6SAopgFPF0bZXSN3f6ELN'
 YOUR_DOMAIN = 'http://3.128.182.187/static-page'
@@ -89,6 +92,29 @@ class User(db.Model):
             return {"status": "success","api_token": encoded_jwt, "packages": [package.as_dict() for package in packages], "userName": user.userName}, 200
         
 
+    def update_package_price(package_id):
+        # Get the package
+        package = Package.query.get(package_id)
+    
+        # Calculate the price
+        totalPrice = 0
+        temp = 0
+    
+        if package.hotels:
+            average_hotel_price = sum(hotel.pricePerNight for hotel in package.hotels) / len(package.hotels)
+            totalPrice += average_hotel_price * package.daysCount
+    
+        for activity in package.activities:
+            totalPrice += activity.price
+    
+        for flight in package.flights:
+            totalPrice += flight.flightPrice
+    
+        # Update the package price
+        package.price = totalPrice
+        db.session.commit()
+
+
 
     def createCusotmPackage(data):
         required_fields = ['api_token', 'flight_id', 'hotel_ids', 'activity_ids', 'check_in_date', 'check_out_date', 'flightPrice', 'hotelPrice', 'activityPrice']
@@ -115,15 +141,14 @@ class User(db.Model):
         hotelPrices = data.get('hotelPrice',[])
         activityPrices = data.get('activityPrice',[])
         daysCount = check_out_date - check_in_date
-
+        
         try:
             decoded_jwt = jwt.decode(data["api_token"], app.config['SECRET_KEY'], algorithms=["HS256"])
         except InvalidTokenError:
             return {"error": "Invalid api token."}, 400
 
         user_id = decoded_jwt["user_id"]
-        flightId = data.get("flight_id"),
-        flightId = flightId[0]
+        flightId = data.get("flight_id")
         hotel_ids = data.get('hotel_ids', [])
         activity_ids = data.get('activity_ids', [])
         totalPrice = 0
@@ -140,25 +165,30 @@ class User(db.Model):
             totalPrice = totalPrice + activityPrice
 
         totalPrice = totalPrice + flightPrice   
-        
-        new_package = Package(packageName=f"Custom package for user {user_id} on {check_in_date.strftime('%Y-%m-%d')}", daysCount=daysCount, isCustom=True, price=totalPrice)
+        print('hhhhhhhhhhhhhhhhere',daysCount)
+        new_package = Package(packageName="Custom Package", daysCount=daysCount.days, isCustom=True, price=totalPrice)
         db.session.add(new_package)
-        db.session.commit()  
-        new_package.price = totalPrice
+        print('hhhhhhhhhhhhhhhhere',new_package.daysCount)
+        db.session.commit()
+        
+        
         
         new_package_flight = PackageFlight(packageId=new_package.id, flightId=flightId)
         db.session.add(new_package_flight)
 
-        
+        User.update_package_price(new_package.id)
+
         for hotel_id in hotel_ids:
             new_package_hotel = PackageHotel(packageId=new_package.id, hotelId=hotel_id)
             db.session.add(new_package_hotel)
 
+        User.update_package_price(new_package.id)
         
         for activity_id in activity_ids:
             new_package_activity = PackageActivity(packageId=new_package.id, activityId=activity_id)
             db.session.add(new_package_activity)
 
+        User.update_package_price(new_package.id)
         
         db.session.commit()
 
@@ -190,7 +220,7 @@ class User(db.Model):
         except Exception as e:
             return str(e)
 
-        
+        db.session.close()
         return { "status": "success", "url":checkout_session.url}, 200
     
 

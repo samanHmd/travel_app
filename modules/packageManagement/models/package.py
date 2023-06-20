@@ -24,8 +24,9 @@ class Package(db.Model):
         price = 0
         for flight in self.flights:
             price += flight.flightPrice
-        for hotel in self.hotels:
-            price += hotel.pricePerNight*self.daysCount
+        if self.hotels:
+            average_hotel_price = sum(hotel.pricePerNight for hotel in self.hotels) / len(self.hotels)
+            price += average_hotel_price * self.daysCount
         for activity in self.activities:
             price += activity.price
         return price
