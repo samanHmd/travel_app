@@ -38,7 +38,7 @@ class BookingController(Resource):
         booking.isCanceled = True
         db.session.commit() 
 
-        user = User.query.get(booking['customerId'])
+        user = User.query.get(booking.customerId)
 
         #Email
         if (not os.environ.get('PYTHONHTTPSVERIFY', '') and
@@ -62,7 +62,7 @@ class BookingController(Resource):
             print(response.body)
             print(response.headers)
         except Exception as e:
-            print(e.message)
+            print(e)
 
-        bookings = Booking.query.all()
+        bookings = Booking.query.filter(Booking.isCanceled == False).all()
         return { "status": "Success", "bookings": [booking.as_dict() for booking in bookings] }
