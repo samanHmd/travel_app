@@ -141,7 +141,7 @@ class User(db.Model):
 
         totalPrice = totalPrice + flightPrice   
         
-        new_package = Package(packageName=f"Custom package for user {user_id} on {check_in_date.strftime('%Y-%m-%d')}", daysCount=daysCount, isCustom=True)
+        new_package = Package(packageName=f"Custom package for user {user_id} on {check_in_date.strftime('%Y-%m-%d')}", daysCount=daysCount, isCustom=True, price=totalPrice)
         db.session.add(new_package)
         db.session.commit()  
         new_package.price = totalPrice
@@ -159,7 +159,7 @@ class User(db.Model):
             new_package_activity = PackageActivity(packageId=new_package.id, activityId=activity_id)
             db.session.add(new_package_activity)
 
-        new_package.price = new_package.priceCalc
+        
         db.session.commit()
 
         try:
