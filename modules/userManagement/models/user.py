@@ -211,7 +211,7 @@ class User(db.Model):
                 cancel_url=YOUR_DOMAIN + '/?success=true&session_id={CHECKOUT_SESSION_ID}',
                 metadata={
                     'customer_id': user_id,
-                    'package_id': 1,
+                    'package_id': new_package.id,
                     'departureDate': check_in_date.strftime('%Y-%m-%d'),
                     'returnDate': check_out_date.strftime('%Y-%m-%d'),
                 },
