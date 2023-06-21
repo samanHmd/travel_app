@@ -33,7 +33,7 @@ api.add_resource(ReportController, '/report')
 api.add_resource(PackageController, '/packages')
 api.add_resource(ReceiveDataController, '/receiveData')
 api.add_resource(CreatePackageController, '/createPackage')
-api.add_resource(PreDefineCreateController, '/preDefineCreate')
+api.add_resource(PreDefineCreateController, '/preDefinePackage')
 
 #bookingManagement Routes
 api.add_resource(PaymentReturnController, '/receiveStatusPayment')

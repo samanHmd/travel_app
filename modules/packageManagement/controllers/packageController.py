@@ -109,16 +109,5 @@ class PackageController(Resource):
     
     def delete(self):
         data = request.get_json()
-        packageId = data.get('packageId')
-
-        package = Package.query.get(packageId)
-
-        if package:
-            db.session.delete(package)
-            db.session.commit()
-            packages = Package.query.all()
-            return {"status": "success", "message": f"Package with id {packageId} has been deleted.", "packages": [package.as_dict() for package in packages]}, 200
-        else:
-            return {"status": "error", "message": f"No package found with id {packageId}."}, 404
-    
-    
+        preDefineDelete_response = Package.preDefineDelete(data)
+        return preDefineDelete_response

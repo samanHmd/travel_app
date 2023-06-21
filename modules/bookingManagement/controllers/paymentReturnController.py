@@ -64,15 +64,12 @@ class PaymentReturnController(Resource):
             print(e.message)
 
         if status == 'success':
+            isSuccess = True
+            Payment.pay( total_amount, new_booking.id, isSuccess )
             
-            new_payment = Payment(paymentAmount=total_amount, bookingId=new_booking.id, isSuccess = True )
-            db.session.add(new_payment)
-            db.session.commit()  
         elif status == 'fail':
-            
-            new_payment = Payment(paymentAmount=total_amount, bookingId=new_booking.id, isSuccess = False )
-            db.session.add(new_payment)
-            db.session.commit()  
+            isSuccess = False
+            Payment.pay( total_amount, new_booking.id, isSuccess )
             
 
         return { "status": "success", "test":status}, 200

@@ -12,8 +12,16 @@ class Payment(db.Model):
     bookingId =  db.Column(db.Integer, db.ForeignKey('booking.id'), nullable=False)
     isSuccess = db.Column(db.Boolean, nullable=False)
 
+      
 
+    def pay(self, total_amount, booking_id, isSuccess):
+        self.paymentAmount = total_amount
+        self.bookingId = booking_id
+        self.isSuccess = isSuccess
+        db.session.add(self)
+        db.session.commit()
 
+     
 
 
 with app.app_context():
