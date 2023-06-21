@@ -5,7 +5,7 @@ from sqlalchemy import event
 from modules.packageManagement.models.flight import Flight
 from modules.packageManagement.models.hotel import Hotel
 from modules.packageManagement.models.activity import Activity
-
+from modules.bookingManagement.models.booking import Booking
 
 
 class Package(db.Model):
@@ -127,12 +127,17 @@ class Package(db.Model):
         packageId = data.get('packageId')
         package = Package.query.get(packageId)
         if package:
-            db.session.delete(package)
-            db.session.commit()
-            packages = Package.query.all()
-            return {"status": "success", "message": f"Package with id {packageId} has been deleted.", "packages": [package.as_dict() for package in packages]}, 200
+            booking = Booking.query.filter_by(packageId=packageId).first()
+            if booking:
+                return {"status": "error", "message": "There is a booking for this package. It cannot be deleted."}, 400
+            else:
+                db.session.delete(package)
+                db.session.commit()
+                packages = Package.query.all()
+                return {"status": "success", "message": "Package has been deleted.", "packages": [package.as_dict() for package in packages]}, 200
         else:
-            return {"status": "error", "message": f"No package found with id {packageId}."}, 404
+            return {"status": "error", "message": "No package found with this id"}, 404
+
 
 
 
