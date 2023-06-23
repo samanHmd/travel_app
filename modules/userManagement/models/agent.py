@@ -32,5 +32,22 @@ class Agent(db.Model):
             return { "status": "No Such Agent" }
 
 
+    def agentRegister():
+        try:
+            password = "123"
+            hashed = bcrypt.generate_password_hash(password).decode('utf-8')
+            agent = Agent(name="agent", userName="agent", email="agent@mail.com", password=hashed)
+            db.session.add(agent)
+        except Exception as e:
+            print(str(e)) 
+            db.session.rollback()
+            return {'error': str(e)}, 400
+        finally:
+            db.session.commit()
+            agent = Agent.query.filter_by(userName="agent").first()
+            encoded_jwt = jwt.encode({'user_id':agent.id, 'expiration': str(datetime.utcnow() + timedelta(seconds=172800))}, app.config['SECRET_KEY'], algorithm="HS256")
+            return {"status": "success","api_token": encoded_jwt, "userName": agent.userName}, 200
+
+
 with app.app_context():
     db.create_all()    

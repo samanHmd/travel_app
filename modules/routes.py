@@ -7,7 +7,7 @@ from modules.userManagement.controllers.singinController import SignInController
 from modules.userManagement.controllers.loginController import LoginController
 from modules.userManagement.controllers.agentLoginController import AgentLoginController
 from modules.userManagement.controllers.agentSignupController import AgentSignupConroller
-from modules.userManagement.controllers.reportController import ReportController
+from modules.reportManagement.controllers.reportController import ReportController
 
 from modules.packageManagement.controllers.packageController import PackageController
 from modules.packageManagement.controllers.receiveDataController import ReceiveDataController

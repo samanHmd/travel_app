@@ -1,12 +1,22 @@
 from modules import db, app
 from datetime import datetime
+from flask import Flask, jsonify
 from sqlalchemy.orm import class_mapper
 from sqlalchemy import event
 from modules.packageManagement.models.flight import Flight
 from modules.packageManagement.models.hotel import Hotel
 from modules.packageManagement.models.activity import Activity
 from modules.bookingManagement.models.booking import Booking
+from sqlalchemy import inspect
+import logging
+import jwt
+from jwt import InvalidTokenError
+import stripe
+from modules.data import flights_data, hotels_data, activities_data, packages_data
 
+
+stripe.api_key = 'sk_test_Hrs6SAopgFPF0bZXSN3f6ELN'
+YOUR_DOMAIN = 'http://3.128.182.187/static-page'
 
 class Package(db.Model):
     __tablename__ = 'package'
@@ -45,6 +55,48 @@ class Package(db.Model):
     
         return dict_repr
     
+
+    def createPreDefineSamples(self):
+        for flight in flights_data:
+            new_flight = Flight(**flight)
+            db.session.add(new_flight)
+    
+        
+        for hotel in hotels_data:
+            new_hotel = Hotel(**hotel)
+            db.session.add(new_hotel)
+
+        
+        for activity in activities_data:
+            new_activity = Activity(**activity)
+            db.session.add(new_activity)
+
+        db.session.commit()
+
+        
+        for package in packages_data:
+            new_package = Package(packageName=package["packageName"], daysCount=package["daysCount"], isCustom=False)
+            db.session.add(new_package)
+            db.session.commit()  
+
+            
+            new_package_flight = PackageFlight(packageId=new_package.id, flightId=package["flightId"])
+            db.session.add(new_package_flight)
+
+            
+            for hotel_id in package["hotel_ids"]:
+                new_package_hotel = PackageHotel(packageId=new_package.id, hotelId=hotel_id)
+                db.session.add(new_package_hotel)
+
+            
+            for activity_id in package["activity_ids"]:
+                new_package_activity = PackageActivity(packageId=new_package.id, activityId=activity_id)
+                db.session.add(new_package_activity)
+
+            new_package.price = new_package.priceCalc
+        db.session.commit()
+        return "success"
+
 
     def createPreDefine(data):
         flights = Flight.query.filter(Flight.id.in_(data["flight_ids"])).all()
@@ -138,6 +190,142 @@ class Package(db.Model):
         else:
             return {"status": "error", "message": "No package found with this id"}, 404
 
+
+    
+    def update_package_price(package_id):
+        # Get the package
+        package = Package.query.get(package_id)
+    
+        # Calculate the price
+        totalPrice = 0
+        temp = 0
+    
+        if package.hotels:
+            average_hotel_price = sum(hotel.pricePerNight for hotel in package.hotels) / len(package.hotels)
+            totalPrice += average_hotel_price * package.daysCount
+    
+        for activity in package.activities:
+            totalPrice += activity.price
+    
+        for flight in package.flights:
+            totalPrice += flight.flightPrice
+    
+        # Update the package price
+        package.price = totalPrice
+        db.session.commit()
+
+
+
+    def createCusotmPackage(data):
+        required_fields = ['api_token', 'flight_id', 'hotel_ids', 'activity_ids', 'check_in_date', 'check_out_date', 'flightPrice', 'hotelPrice', 'activityPrice']
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return {"error": f"{field} is required."}, 400
+            
+            if field in ["flight_id", "flightPrice"]:
+                if not isinstance(data[field], int):
+                    return {"error": f"{field} must be an integer."}, 400
+            elif field in ["hotel_ids", "activity_ids", "hotelPrice", "activityPrice"]:
+                if not isinstance(data[field], list):
+                    return {"error": f"{field} must be a list."}, 400
+                if not all(isinstance(i, int) for i in data[field]):
+                    return {"error": f"All elements in {field} must be integers."}, 400
+
+        try:
+            check_in_date = datetime.strptime(data["check_in_date"], '%Y-%m-%d')
+            check_out_date = datetime.strptime(data["check_out_date"], '%Y-%m-%d')
+        except ValueError:
+            return {"error": "Dates must be in 'YYYY-MM-DD' format."}, 400
+
+        flightPrice = data["flightPrice"]
+        hotelPrices = data.get('hotelPrice',[])
+        activityPrices = data.get('activityPrice',[])
+        daysCount = check_out_date - check_in_date
+        
+        try:
+            decoded_jwt = jwt.decode(data["api_token"], app.config['SECRET_KEY'], algorithms=["HS256"])
+        except InvalidTokenError:
+            return {"error": "Invalid api token."}, 400
+
+        user_id = decoded_jwt["user_id"]
+        flightId = data.get("flight_id")
+        hotel_ids = data.get('hotel_ids', [])
+        activity_ids = data.get('activity_ids', [])
+        totalPrice = 0
+        temp = 0
+        
+
+        for hotelPrice in hotelPrices:
+            temp = temp + hotelPrice
+
+        temp = temp/len(hotelPrices)  
+        totalPrice = temp*daysCount.days
+
+        for activityPrice in activityPrices:
+            totalPrice = totalPrice + activityPrice
+
+        totalPrice = totalPrice + flightPrice  
+        new_package = Package(packageName="Custom Package", daysCount=daysCount.days, isCustom=True, price=totalPrice)
+        db.session.add(new_package)
+        db.session.commit()
+        
+        
+        
+        new_package_flight = PackageFlight(packageId=new_package.id, flightId=flightId)
+        db.session.add(new_package_flight)
+        from modules.userManagement.models.user import User
+        User.update_package_price(new_package.id)
+
+        for hotel_id in hotel_ids:
+            new_package_hotel = PackageHotel(packageId=new_package.id, hotelId=hotel_id)
+            db.session.add(new_package_hotel)
+
+        User.update_package_price(new_package.id)
+        
+        for activity_id in activity_ids:
+            new_package_activity = PackageActivity(packageId=new_package.id, activityId=activity_id)
+            db.session.add(new_package_activity)
+
+        User.update_package_price(new_package.id)
+        
+        db.session.commit()
+
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                line_items=[
+                    {
+                      'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                          'name': 'Custom Package',
+                        },
+                        'unit_amount': int(totalPrice)*100,
+                      },
+                      'quantity': 1,
+                    },
+                ],
+                mode='payment',
+                success_url=YOUR_DOMAIN + '/?success=true&session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=YOUR_DOMAIN + '/?success=true&session_id={CHECKOUT_SESSION_ID}',
+                metadata={
+                    'customer_id': user_id,
+                    'package_id': new_package.id,
+                    'departureDate': check_in_date.strftime('%Y-%m-%d'),
+                    'returnDate': check_out_date.strftime('%Y-%m-%d'),
+                },
+            )
+            
+        except Exception as e:
+            return str(e)
+
+        db.session.close()
+        return { "status": "success", "url":checkout_session.url}, 200
+
+
+
+    def getPackages():
+        packages = Package.query.all()
+        return jsonify([package.as_dict() for package in packages])
 
 
 

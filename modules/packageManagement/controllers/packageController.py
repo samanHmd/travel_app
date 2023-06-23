@@ -14,98 +14,15 @@ from modules.data import flights_data, hotels_data, activities_data, packages_da
 
 
 
-
-
-# flight_field = {
-#     'id': fields.Integer,
-#     'flightNumber': fields.String,
-#     'departureTime': fields.DateTime,
-#     'arrivalTime': fields.DateTime,
-#     'departureLocation': fields.String,
-#     'arrivalCountry': fields.String,
-#     'arrivalCity': fields.String,
-#     'price': fields.String,
-# }
-
-
-
-# hotel_field = {
-#     'id': fields.Integer,
-#     'hotelName': fields.String,
-#     'checkInDate': fields.DateTime,
-#     'checkOutDate': fields.DateTime,
-#     'location': fields.String,
-#     'pricePerNight': fields.String,
-# }
-
-
-
-# activity_field = {
-#     'id': fields.Integer,
-#     'activityName': fields.String,
-#     'location': fields.String,
-#     'price': fields.String,
-# }
-
-# package_field = {
-#     'id': fields.Integer,
-#     'packageName': fields.String,
-#     'price': fields.Float,
-#     'flights': fields.List(fields.Nested(flight_field), attribute=lambda x: x.get_flights()),
-#     'hotels': fields.List(fields.Nested(hotel_field), attribute=lambda x: x.get_hotels()),
-#     'activities': fields.List(fields.Nested(activity_field), attribute=lambda x: x.get_activities()),
-# }
-
 class PackageController(Resource):
-    #@marshal_with(package_field)
     def get(self):
-        getPackages_response = User.getPackages();
-        return getPackages_response;
+        getPackages_response = Package.getPackages();
+        return getPackages_response
         
         
-
     def post(self):
-        for flight in flights_data:
-            new_flight = Flight(**flight)
-            db.session.add(new_flight)
-    
-        
-        for hotel in hotels_data:
-            new_hotel = Hotel(**hotel)
-            db.session.add(new_hotel)
-
-        
-        for activity in activities_data:
-            new_activity = Activity(**activity)
-            db.session.add(new_activity)
-
-        db.session.commit()
-
-        
-        for package in packages_data:
-            new_package = Package(packageName=package["packageName"], daysCount=package["daysCount"], isCustom=False)
-            db.session.add(new_package)
-            db.session.commit()  
-
-            
-            new_package_flight = PackageFlight(packageId=new_package.id, flightId=package["flightId"])
-            db.session.add(new_package_flight)
-
-            
-            for hotel_id in package["hotel_ids"]:
-                new_package_hotel = PackageHotel(packageId=new_package.id, hotelId=hotel_id)
-                db.session.add(new_package_hotel)
-
-            
-            for activity_id in package["activity_ids"]:
-                new_package_activity = PackageActivity(packageId=new_package.id, activityId=activity_id)
-                db.session.add(new_package_activity)
-
-            new_package.price = new_package.priceCalc
- 
-
-        db.session.commit()
-        return "success"
+        createPreDefineSamples_response = Package.createPreDefineSamples()
+        return createPreDefineSamples_response
     
     def delete(self):
         data = request.get_json()
