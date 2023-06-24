@@ -16,5 +16,5 @@ class ReceiveDataController(Resource):
     def post(self):
         data = request.get_json()
         returnComponents_response = Package.returnComponents(data)
-        return data
+        return returnComponents_response
             
