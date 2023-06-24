@@ -273,20 +273,20 @@ class Package(db.Model):
         
         new_package_flight = PackageFlight(packageId=new_package.id, flightId=flightId)
         db.session.add(new_package_flight)
-        from modules.userManagement.models.user import User
-        User.update_package_price(new_package.id)
+        
+        Package.update_package_price(new_package.id)
 
         for hotel_id in hotel_ids:
             new_package_hotel = PackageHotel(packageId=new_package.id, hotelId=hotel_id)
             db.session.add(new_package_hotel)
 
-        User.update_package_price(new_package.id)
+        Package.update_package_price(new_package.id)
         
         for activity_id in activity_ids:
             new_package_activity = PackageActivity(packageId=new_package.id, activityId=activity_id)
             db.session.add(new_package_activity)
 
-        User.update_package_price(new_package.id)
+        Package.update_package_price(new_package.id)
         
         db.session.commit()
 
