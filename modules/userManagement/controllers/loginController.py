@@ -1,7 +1,6 @@
 from flask import Flask, jsonify
 from flask_restful import Api, Resource, request, fields, marshal_with, marshal
 from modules.userManagement.models.user import User
-from modules.packageManagement.models.package import Package
 from modules import bcrypt, app
 import jwt
 from datetime import datetime, timedelta

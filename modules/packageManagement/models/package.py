@@ -6,7 +6,6 @@ from sqlalchemy import event
 from modules.packageManagement.models.flight import Flight
 from modules.packageManagement.models.hotel import Hotel
 from modules.packageManagement.models.activity import Activity
-from modules.bookingManagement.models.booking import Booking
 from sqlalchemy import inspect
 import logging
 import jwt
@@ -176,6 +175,7 @@ class Package(db.Model):
         return {"status": "success", "data": package.as_dict()}, 200
 
     def preDefineDelete(data):
+        from modules.bookingManagement.models.booking import Booking
         packageId = data.get('packageId')
         package = Package.query.get(packageId)
         if package:

@@ -1,8 +1,8 @@
 from flask import Flask, jsonify
 from flask_restful import Api, Resource, request, fields, marshal_with, marshal
 from modules.userManagement.models.user import User
-from modules.bookingManagement.models.booking import Booking
 from modules.packageManagement.models.package import Package
+from modules.bookingManagement.models.booking import Booking
 from modules import bcrypt, app, db
 import jwt
 from jwt import InvalidTokenError

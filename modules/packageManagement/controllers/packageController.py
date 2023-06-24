@@ -16,12 +16,12 @@ from modules.data import flights_data, hotels_data, activities_data, packages_da
 
 class PackageController(Resource):
     def get(self):
-        getPackages_response = Package.getPackages();
+        getPackages_response = Package.getPackages()
         return getPackages_response
         
         
     def post(self):
-        createPreDefineSamples_response = Package.createPreDefineSamples()
+        createPreDefineSamples_response = Package.createPreDefineSamples(self)
         return createPreDefineSamples_response
     
     def delete(self):

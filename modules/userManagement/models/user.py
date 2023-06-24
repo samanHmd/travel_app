@@ -5,7 +5,6 @@ from sqlalchemy.orm import class_mapper
 from sqlalchemy import event
 from modules import bcrypt, app
 from datetime import datetime, timedelta
-from modules.packageManagement.models.package import Package
 import jwt
 from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
@@ -13,7 +12,6 @@ import jwt
 from jwt import InvalidTokenError
 from datetime import datetime, timedelta
 from modules import db, app
-from modules.packageManagement.models.package import Package, PackageActivity, PackageFlight, PackageHotel
 import stripe
 from sqlalchemy import inspect
 import logging
@@ -35,6 +33,7 @@ class User(db.Model):
         return f"User(id={self.id}, name={self.name}, userName={self.userName}, email={self.email})"
 
     def login(data):
+        from modules.packageManagement.models.package import Package
         required_fields = ['userName', 'password']
         for field in required_fields:
             if field not in data or not data[field]:
@@ -55,6 +54,7 @@ class User(db.Model):
         
 
     def register(data):
+        from modules.packageManagement.models.package import Package
         required_fields = ['userName', 'name', 'email', 'password']
         for field in required_fields:
             if field not in data or not data[field]:
